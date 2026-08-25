@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { Sparkles, GraduationCap, BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { PublicNav } from "@/components/PublicNav";
 
 
 
@@ -130,7 +131,9 @@ function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen grid place-items-center bg-background p-4">
+    <div className="min-h-screen bg-background flex flex-col">
+      <PublicNav />
+      <div className="flex-1 grid place-items-center p-4 sm:p-6">
       <div className="w-full max-w-md bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-xl">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-9 h-9 rounded-lg bg-primary grid place-items-center"><Sparkles className="w-5 h-5 text-primary-foreground" /></div>
@@ -185,6 +188,7 @@ function SignupPage() {
         <div className="text-xs text-center mt-4 text-muted-foreground">
           {t("auth.haveAccount")} <Link to="/login" className="text-primary">{t("auth.signInLink")}</Link>
         </div>
+      </div>
       </div>
     </div>
   );
