@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { PublicNav } from "@/components/PublicNav";
 import { Eye, EyeOff } from "lucide-react";
 
 function ResetPage() {
@@ -50,7 +51,9 @@ function ResetPage() {
   const mismatch = pw2.length > 0 && pw !== pw2;
 
   return (
-    <div className="min-h-screen grid place-items-center bg-background p-4 sm:p-6">
+    <div className="min-h-screen bg-background flex flex-col">
+      <PublicNav />
+      <div className="flex-1 grid place-items-center p-4 sm:p-6">
       <div className="w-full max-w-sm bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-xl">
         <div className="font-semibold mb-1">{mode === "request" ? t("auth.resetTitle") : t("auth.setNewTitle")}</div>
         <div className="text-xs text-muted-foreground mb-5">{mode === "request" ? t("auth.resetHint") : t("auth.setNewDesc")}</div>
@@ -116,6 +119,7 @@ function ResetPage() {
         )}
 
         <div className="text-xs text-center mt-5"><Link to="/login" className="text-primary">{t("auth.backToSignIn")}</Link></div>
+      </div>
       </div>
     </div>
   );
