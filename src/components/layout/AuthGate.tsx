@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { AppSidebar } from "@/components/AppSidebar";
 import { PendingGate, StudentAttachmentGate } from "./Gates";
 import { ViewerBanner, SubscriptionBanner } from "./Banners";
+import { LogoLoader, FadeTransition } from "@/components/LogoLoader";
 
 const PUBLIC_PATHS = ["/login", "/signup", "/reset-password"];
 export function isPublic(p: string) {
@@ -62,23 +63,34 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     nav({ to: target });
   }, [user?.id, role, loading, path]);
 
+  // Keep the loader overlay until the user is fully resolved, then let the
+  // loaded page fade in underneath while the loader fades out.
+  const [booted, setBooted] = React.useState(false);
+  React.useEffect(() => {
+    if (!loading && user) setBooted(true);
+  }, [loading, user]);
+
   if (isPublic(path)) return <>{children}</>;
   if (!loading && !user && path === "/") return <>{children}</>;
-  if (loading || !user) return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Loading…</div>;
-  if (path === "/select-role" || path === "/pending" || path === "/join-session") return <>{children}</>;
+  if (!user && !isPublic(path)) return <LogoLoader />;
 
-  return (
-    <PendingGate>
-      <StudentAttachmentGate>
-        <div className="flex min-h-screen bg-background">
-          <AppSidebar />
-          <main className="flex-1 min-w-0 pt-14 md:pt-0">
-            <ViewerBanner />
-            <SubscriptionBanner />
-            <div className="max-w-[1400px] mx-auto p-4 sm:p-6 md:p-8">{children}</div>
-          </main>
-        </div>
-      </StudentAttachmentGate>
-    </PendingGate>
-  );
+  const gatedContent =
+    path === "/select-role" || path === "/pending" || path === "/join-session" ? (
+      <>{children}</>
+    ) : (
+      <PendingGate>
+        <StudentAttachmentGate>
+          <div className="flex min-h-screen bg-background">
+            <AppSidebar />
+            <main className="flex-1 min-w-0 pt-14 md:pt-0">
+              <ViewerBanner />
+              <SubscriptionBanner />
+              <div className="max-w-[1400px] mx-auto p-4 sm:p-6 md:p-8">{children}</div>
+            </main>
+          </div>
+        </StudentAttachmentGate>
+      </PendingGate>
+    );
+
+  return <FadeTransition loading={!booted}>{gatedContent}</FadeTransition>;
 }

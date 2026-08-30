@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Copy, KeyRound, Plus, Users, Briefcase, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const Route = getRouteApi("/classes/$id");
+const Route = getRouteApi("/classes_/$id");
 
 
 

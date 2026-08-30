@@ -10,7 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pi
 import { Sparkles, Tv, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
-const Route = getRouteApi("/sessions/$id");
+const Route = getRouteApi("/sessions_/$id");
 
 
 

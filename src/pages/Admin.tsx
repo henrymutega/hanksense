@@ -93,19 +93,26 @@ function AdminPage() {
     const classNameById: Record<string, string> = {};
     (klasses || []).forEach((k: any) => { classNameById[k.id] = `${k.course_code ? k.course_code + " · " : ""}${k.name}`; });
     const [{ data: mems }, { data: jobs }, { data: cands }] = await Promise.all([
-      supabase.from("class_memberships").select("class_id, student_id, profiles:profiles!inner(id, full_name, email)").in("class_id", classIds),
+      supabase.from("class_memberships").select("class_id, student_id").in("class_id", classIds),
       supabase.from("session_jobs").select("id, created_by, class_id").in("class_id", classIds),
       supabase.from("session_candidates").select("job_id, class_id").in("class_id", classIds),
     ]);
+    const memberRows = ((mems as any[]) || []);
+    const studentIds = Array.from(new Set(memberRows.map(m => m.student_id).filter(Boolean)));
+    const profById: Record<string, any> = {};
+    if (studentIds.length) {
+      const { data: profs } = await supabase.from("profiles").select("id, full_name, email").in("id", studentIds);
+      ((profs as any[]) || []).forEach(p => { profById[p.id] = p; });
+    }
     const jobsByUserClass: Record<string, string[]> = {};
     (jobs || []).forEach((j: any) => { const k = `${j.created_by}::${j.class_id}`; (jobsByUserClass[k] ||= []).push(j.id); });
     const candsByJob: Record<string, number> = {};
     (cands || []).forEach((c: any) => { candsByJob[c.job_id] = (candsByJob[c.job_id] || 0) + 1; });
-    const rows = ((mems as any[]) || []).map(m => {
-      const p = m.profiles; if (!p) return null;
+    const rows = memberRows.map(m => {
+      const p = profById[m.student_id] ?? { id: m.student_id, full_name: null, email: null };
       const myJobs = jobsByUserClass[`${p.id}::${m.class_id}`] || [];
       return { id: p.id, full_name: p.full_name, email: p.email, class_name: classNameById[m.class_id] || "—", jobs: myJobs.length, candidates: myJobs.reduce((s, jid) => s + (candsByJob[jid] || 0), 0) };
-    }).filter(Boolean) as any[];
+    });
     setStudentsByLecturer(prev => ({ ...prev, [lecturer_id]: rows }));
   }
 

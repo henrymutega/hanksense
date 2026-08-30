@@ -32,12 +32,12 @@ import { Route as SessionsRouteImport } from './routes/sessions'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SimulationRouteImport } from './routes/simulation'
 import { Route as TalentPoolRouteImport } from './routes/talent-pool'
-import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
-import { Route as ClassesIdRouteImport } from './routes/classes.$id'
+import { Route as CandidatesIdRouteImport } from './routes/candidates_.$id'
+import { Route as ClassesIdRouteImport } from './routes/classes_.$id'
 import { Route as InterviewRoomIdRouteImport } from './routes/interview-room.$id'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as PresentSessionIdRouteImport } from './routes/present.$sessionId'
-import { Route as SessionsIdRouteImport } from './routes/sessions.$id'
+import { Route as SessionsIdRouteImport } from './routes/sessions_.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -155,14 +155,14 @@ const TalentPoolRoute = TalentPoolRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const CandidatesIdRoute = CandidatesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => CandidatesRoute,
+  id: '/candidates_/$id',
+  path: '/candidates/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ClassesIdRoute = ClassesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => ClassesRoute,
+  id: '/classes_/$id',
+  path: '/classes/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const InterviewRoomIdRoute = InterviewRoomIdRouteImport.update({
   id: '/interview-room/$id',
@@ -180,9 +180,9 @@ const PresentSessionIdRoute = PresentSessionIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SessionsIdRoute = SessionsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => SessionsRoute,
+  id: '/sessions_/$id',
+  path: '/sessions/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -190,8 +190,8 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/ai-jobs': typeof AiJobsRoute
   '/billing': typeof BillingRoute
-  '/candidates': typeof CandidatesRouteWithChildren
-  '/classes': typeof ClassesRouteWithChildren
+  '/candidates': typeof CandidatesRoute
+  '/classes': typeof ClassesRoute
   '/ethics': typeof EthicsRoute
   '/interviews': typeof InterviewsRoute
   '/jobs': typeof JobsRoute
@@ -205,7 +205,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/screening': typeof ScreeningRoute
   '/select-role': typeof SelectRoleRoute
-  '/sessions': typeof SessionsRouteWithChildren
+  '/sessions': typeof SessionsRoute
   '/signup': typeof SignupRoute
   '/simulation': typeof SimulationRoute
   '/talent-pool': typeof TalentPoolRoute
@@ -221,8 +221,8 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/ai-jobs': typeof AiJobsRoute
   '/billing': typeof BillingRoute
-  '/candidates': typeof CandidatesRouteWithChildren
-  '/classes': typeof ClassesRouteWithChildren
+  '/candidates': typeof CandidatesRoute
+  '/classes': typeof ClassesRoute
   '/ethics': typeof EthicsRoute
   '/interviews': typeof InterviewsRoute
   '/jobs': typeof JobsRoute
@@ -236,7 +236,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/screening': typeof ScreeningRoute
   '/select-role': typeof SelectRoleRoute
-  '/sessions': typeof SessionsRouteWithChildren
+  '/sessions': typeof SessionsRoute
   '/signup': typeof SignupRoute
   '/simulation': typeof SimulationRoute
   '/talent-pool': typeof TalentPoolRoute
@@ -253,8 +253,8 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/ai-jobs': typeof AiJobsRoute
   '/billing': typeof BillingRoute
-  '/candidates': typeof CandidatesRouteWithChildren
-  '/classes': typeof ClassesRouteWithChildren
+  '/candidates': typeof CandidatesRoute
+  '/classes': typeof ClassesRoute
   '/ethics': typeof EthicsRoute
   '/interviews': typeof InterviewsRoute
   '/jobs': typeof JobsRoute
@@ -268,16 +268,16 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/screening': typeof ScreeningRoute
   '/select-role': typeof SelectRoleRoute
-  '/sessions': typeof SessionsRouteWithChildren
+  '/sessions': typeof SessionsRoute
   '/signup': typeof SignupRoute
   '/simulation': typeof SimulationRoute
   '/talent-pool': typeof TalentPoolRoute
-  '/candidates/$id': typeof CandidatesIdRoute
-  '/classes/$id': typeof ClassesIdRoute
+  '/candidates_/$id': typeof CandidatesIdRoute
+  '/classes_/$id': typeof ClassesIdRoute
   '/interview-room/$id': typeof InterviewRoomIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/present/$sessionId': typeof PresentSessionIdRoute
-  '/sessions/$id': typeof SessionsIdRoute
+  '/sessions_/$id': typeof SessionsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -367,12 +367,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/simulation'
     | '/talent-pool'
-    | '/candidates/$id'
-    | '/classes/$id'
+    | '/candidates_/$id'
+    | '/classes_/$id'
     | '/interview-room/$id'
     | '/join/$code'
     | '/present/$sessionId'
-    | '/sessions/$id'
+    | '/sessions_/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -380,8 +380,8 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AiJobsRoute: typeof AiJobsRoute
   BillingRoute: typeof BillingRoute
-  CandidatesRoute: typeof CandidatesRouteWithChildren
-  ClassesRoute: typeof ClassesRouteWithChildren
+  CandidatesRoute: typeof CandidatesRoute
+  ClassesRoute: typeof ClassesRoute
   EthicsRoute: typeof EthicsRoute
   InterviewsRoute: typeof InterviewsRoute
   JobsRoute: typeof JobsRoute
@@ -395,13 +395,16 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ScreeningRoute: typeof ScreeningRoute
   SelectRoleRoute: typeof SelectRoleRoute
-  SessionsRoute: typeof SessionsRouteWithChildren
+  SessionsRoute: typeof SessionsRoute
   SignupRoute: typeof SignupRoute
   SimulationRoute: typeof SimulationRoute
   TalentPoolRoute: typeof TalentPoolRoute
+  CandidatesIdRoute: typeof CandidatesIdRoute
+  ClassesIdRoute: typeof ClassesIdRoute
   InterviewRoomIdRoute: typeof InterviewRoomIdRoute
   JoinCodeRoute: typeof JoinCodeRoute
   PresentSessionIdRoute: typeof PresentSessionIdRoute
+  SessionsIdRoute: typeof SessionsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -567,19 +570,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TalentPoolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/candidates/$id': {
-      id: '/candidates/$id'
-      path: '/$id'
+    '/candidates_/$id': {
+      id: '/candidates_/$id'
+      path: '/candidates/$id'
       fullPath: '/candidates/$id'
       preLoaderRoute: typeof CandidatesIdRouteImport
-      parentRoute: typeof CandidatesRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/classes/$id': {
-      id: '/classes/$id'
-      path: '/$id'
+    '/classes_/$id': {
+      id: '/classes_/$id'
+      path: '/classes/$id'
       fullPath: '/classes/$id'
       preLoaderRoute: typeof ClassesIdRouteImport
-      parentRoute: typeof ClassesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/interview-room/$id': {
       id: '/interview-room/$id'
@@ -602,58 +605,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PresentSessionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sessions/$id': {
-      id: '/sessions/$id'
-      path: '/$id'
+    '/sessions_/$id': {
+      id: '/sessions_/$id'
+      path: '/sessions/$id'
       fullPath: '/sessions/$id'
       preLoaderRoute: typeof SessionsIdRouteImport
-      parentRoute: typeof SessionsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface CandidatesRouteChildren {
-  CandidatesIdRoute: typeof CandidatesIdRoute
-}
-
-const CandidatesRouteChildren: CandidatesRouteChildren = {
-  CandidatesIdRoute: CandidatesIdRoute,
-}
-
-const CandidatesRouteWithChildren = CandidatesRoute._addFileChildren(
-  CandidatesRouteChildren,
-)
-
-interface ClassesRouteChildren {
-  ClassesIdRoute: typeof ClassesIdRoute
-}
-
-const ClassesRouteChildren: ClassesRouteChildren = {
-  ClassesIdRoute: ClassesIdRoute,
-}
-
-const ClassesRouteWithChildren =
-  ClassesRoute._addFileChildren(ClassesRouteChildren)
-
-interface SessionsRouteChildren {
-  SessionsIdRoute: typeof SessionsIdRoute
-}
-
-const SessionsRouteChildren: SessionsRouteChildren = {
-  SessionsIdRoute: SessionsIdRoute,
-}
-
-const SessionsRouteWithChildren = SessionsRoute._addFileChildren(
-  SessionsRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AiJobsRoute: AiJobsRoute,
   BillingRoute: BillingRoute,
-  CandidatesRoute: CandidatesRouteWithChildren,
-  ClassesRoute: ClassesRouteWithChildren,
+  CandidatesRoute: CandidatesRoute,
+  ClassesRoute: ClassesRoute,
   EthicsRoute: EthicsRoute,
   InterviewsRoute: InterviewsRoute,
   JobsRoute: JobsRoute,
@@ -667,13 +635,16 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ScreeningRoute: ScreeningRoute,
   SelectRoleRoute: SelectRoleRoute,
-  SessionsRoute: SessionsRouteWithChildren,
+  SessionsRoute: SessionsRoute,
   SignupRoute: SignupRoute,
   SimulationRoute: SimulationRoute,
   TalentPoolRoute: TalentPoolRoute,
+  CandidatesIdRoute: CandidatesIdRoute,
+  ClassesIdRoute: ClassesIdRoute,
   InterviewRoomIdRoute: InterviewRoomIdRoute,
   JoinCodeRoute: JoinCodeRoute,
   PresentSessionIdRoute: PresentSessionIdRoute,
+  SessionsIdRoute: SessionsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

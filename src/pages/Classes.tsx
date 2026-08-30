@@ -71,10 +71,16 @@ function ClassesPage() {
     if (studentsByClass[classId]) return;
     const { data: mems } = await supabase
       .from("class_memberships")
-      .select("student_id, profiles:profiles!inner(id, full_name, email)")
+      .select("student_id")
       .eq("class_id", classId);
-    const list = ((mems as any[]) || []).map(r => r.profiles).filter(Boolean);
-    const ids = list.map((s: any) => s.id);
+    const ids = ((mems as any[]) || []).map(m => m.student_id).filter(Boolean);
+    let list: any[] = [];
+    if (ids.length) {
+      const { data: profs } = await supabase.from("profiles").select("id, full_name, email").in("id", ids);
+      const byId: Record<string, any> = {};
+      ((profs as any[]) || []).forEach(p => { byId[p.id] = p; });
+      list = ids.map(sid => byId[sid] ?? { id: sid, full_name: null, email: null });
+    }
     const [{ data: jobs }, { data: cands }] = await Promise.all([
       supabase.from("session_jobs").select("id, created_by").eq("class_id", classId).in("created_by", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]),
       supabase.from("session_candidates").select("job_id").eq("class_id", classId),

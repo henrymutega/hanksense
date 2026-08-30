@@ -8,10 +8,11 @@ import { useAuth } from "@/lib/auth";
 import { Landing } from "@/components/Landing";
 import { supabase } from "@/integrations/supabase/client";
 import { STUDENT_JOB_LIMIT } from "@/lib/lecturer";
+import { LogoLoader } from "@/components/LogoLoader";
 
 function Home() {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Loading…</div>;
+  if (loading) return <LogoLoader />;
   if (!user) return <Landing />;
   return <Dashboard />;
 }

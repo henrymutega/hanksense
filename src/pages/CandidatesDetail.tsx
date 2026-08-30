@@ -7,7 +7,7 @@ import { ScoreBadge } from "@/pages/Candidates";
 import { ArrowLeft, Check, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const Route = getRouteApi("/candidates/$id");
+const Route = getRouteApi("/candidates_/$id");
 
 
 

@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { generateText } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "./ai-gateway";
+import { generateAiText, isAiConfigurationError } from "./ai-gateway";
 
 // =================================================================
 // Tolerant schemas with safe defaults — we never throw on missing fields
@@ -112,15 +111,7 @@ function safeJsonParse(raw: string): unknown | null {
 }
 
 async function aiJson(prompt: string): Promise<string> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) throw new Error("LOVABLE_API_KEY missing");
-  const gateway = createLovableAiGatewayProvider(key);
-  const guard = "\n\nReturn ONLY valid JSON. No markdown fences. No prose. No explanation. Start your response with { and end with }.";
-  const { text } = await generateText({
-    model: gateway("google/gemini-3-flash-preview"),
-    prompt: prompt + guard,
-  });
-  return text;
+  return generateAiText(prompt, process.env.LOVABLE_API_KEY, process.env.OPENAI_API_KEY);
 }
 
 async function generateValidated<T>(
@@ -128,6 +119,7 @@ async function generateValidated<T>(
   prompt: string,
   label: string,
 ): Promise<T> {
+  let lastError: unknown;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const raw = await aiJson(attempt === 0 ? prompt : prompt + "\n\nIMPORTANT: Your previous response was invalid. Return STRICT JSON only.");
@@ -136,24 +128,31 @@ async function generateValidated<T>(
         const result = schema.safeParse(parsed);
         if (result.success) return result.data;
         console.warn(`[${label}] schema validation attempt ${attempt + 1} failed`, result.error.issues.slice(0, 3));
+        lastError = new Error("The AI response did not match the expected format.");
       } else {
         console.warn(`[${label}] JSON extraction attempt ${attempt + 1} failed, raw head:`, raw.slice(0, 200));
+        lastError = new Error("The AI response could not be parsed.");
       }
     } catch (e) {
+      // A missing provider key is a configuration error — retrying is pointless.
+      if (isAiConfigurationError(e)) throw e;
       console.warn(`[${label}] generation attempt ${attempt + 1} threw`, (e as Error).message);
-      if (attempt === 1) throw e;
+      lastError = e;
     }
   }
-  // Final fallback — return defaults so UI never crashes
-  return schema.parse({});
+  // No silent empty-object fallback: surface the real failure.
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`${label}: AI generation failed. Please try again.`);
 }
+
 
 // =================================================================
 // Server Functions
 // =================================================================
 
 export const generateJobFromPrompt = createServerFn({ method: "POST" })
-  .inputValidator((input: { prompt: string; language?: string }) =>
+  .validator((input: { prompt: string; language?: string }) =>
     z.object({
       prompt: z.string().min(3).max(2000),
       language: z.string().max(20).optional(),
@@ -211,7 +210,7 @@ Recruiter request: ${data.prompt}`;
 
 
 export const parseCvText = createServerFn({ method: "POST" })
-  .inputValidator((input: { cvText: string; fileName: string }) =>
+  .validator((input: { cvText: string; fileName: string }) =>
     z.object({ cvText: z.string().min(10).max(40000), fileName: z.string().max(300) }).parse(input),
   )
   .handler(async ({ data }) => {
@@ -233,7 +232,7 @@ ${data.cvText.slice(0, 14000)}`;
   });
 
 export const matchCvToJob = createServerFn({ method: "POST" })
-  .inputValidator((input: { cvText: string; jobTitle: string; requiredSkills: string[]; preferredSkills: string[]; summary: string }) =>
+  .validator((input: { cvText: string; jobTitle: string; requiredSkills: string[]; preferredSkills: string[]; summary: string }) =>
     z.object({
       cvText: z.string().min(20).max(40000),
       jobTitle: z.string().max(200),

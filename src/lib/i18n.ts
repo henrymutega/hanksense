@@ -1431,6 +1431,17 @@ if (!i18n.isInitialized) {
   });
 }
 
+/**
+ * SSR must always render the default language so the markup matches the
+ * client's first (pre-hydration) render. Stored preferences are applied only
+ * after hydration via initLangFromStorage().
+ */
+export function ensureSsrLanguage() {
+  if (typeof window === "undefined" && i18n.language !== "en") {
+    i18n.changeLanguage("en");
+  }
+}
+
 export function setLang(code: Lang) {
   i18n.changeLanguage(code);
   if (typeof window !== "undefined") {
@@ -1438,6 +1449,7 @@ export function setLang(code: Lang) {
     document.documentElement.lang = code;
   }
 }
+
 
 export function initLangFromStorage() {
   if (typeof window === "undefined") return;

@@ -33,6 +33,7 @@ function AiJobsPage() {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [posting, setPosting] = useState(false);
+  const [genError, setGenError] = useState<string | null>(null);
 
   const selectedClass = classes.find(c => c.id === classId) || null;
   // Quota is per lecturer: scope the count to the owner of the selected class.
@@ -94,11 +95,23 @@ function AiJobsPage() {
   async function generate() {
     if (!prompt.trim()) return toast.error("Describe the role you need");
     setLoading(true);
+    setGenError(null);
     try {
       const j = await genFn({ data: { prompt, language: i18n.language } });
       setJob(j);
       setEditing(true);
-    } catch (e: any) { toast.error(e.message || "Generation failed"); }
+    } catch (e: any) {
+      const msg: string = e?.message || "Generation failed";
+      if (msg.includes("AI_NOT_CONFIGURED")) {
+        setGenError(
+          "AI runs through your Lovable account. Make sure you are signed in, then try again. (On external hosting without Lovable, set an OPENAI_API_KEY environment variable instead.)",
+        );
+        toast.error("AI is not configured in this environment");
+      } else {
+        setGenError(msg);
+        toast.error(msg);
+      }
+    }
     finally { setLoading(false); }
   }
 
@@ -193,6 +206,14 @@ function AiJobsPage() {
             <div className="text-[11px] text-muted-foreground mt-1.5">{t("aiJobsPage.suggestionsHint")}</div>
           </div>
         )}
+
+        {genError && (
+          <div className="mt-3 flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+            <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+            <span>{genError}</span>
+          </div>
+        )}
+
 
         <div className="flex justify-end mt-3">
           <button onClick={generate} disabled={!stepReady || !canWrite || quotaReached || loading || !prompt.trim()}

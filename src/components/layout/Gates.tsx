@@ -2,6 +2,7 @@ import React from "react";
 import { useRouterState, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { FadeTransition } from "@/components/LogoLoader";
 
 /** Lecturers whose account is pending/suspended are parked on /pending. */
 export function PendingGate({ children }: { children: React.ReactNode }) {
@@ -23,8 +24,7 @@ export function PendingGate({ children }: { children: React.ReactNode }) {
       }
     })();
   }, [user?.id, role, path]);
-  if (check === "loading") return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Loading…</div>;
-  return <>{children}</>;
+  return <FadeTransition loading={check === "loading"}>{children}</FadeTransition>;
 }
 
 /** Students must always belong to a lecturer via a class/session. */
@@ -49,6 +49,5 @@ export function StudentAttachmentGate({ children }: { children: React.ReactNode 
       }
     })();
   }, [user?.id, role, path]);
-  if (state === "loading") return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Loading…</div>;
-  return <>{children}</>;
+  return <FadeTransition loading={state === "loading"}>{children}</FadeTransition>;
 }
