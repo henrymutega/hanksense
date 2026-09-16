@@ -146,7 +146,7 @@ fileInput.addEventListener("change", function(){
   extract(f).then(function(text){
     text = (text||"").replace(/\\s+/g," ").trim();
     if(text.length < 50) throw new Error("We couldn't read enough text from that file. Try a different format.");
-    cvText = text.slice(0, 40000);
+    cvText = text.slice(0, 20000);
     fileName = f.name;
     drop.textContent = "✓ " + f.name;
     drop.classList.add("has");

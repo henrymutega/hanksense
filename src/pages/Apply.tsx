@@ -38,15 +38,18 @@ export default function ApplyPage() {
     if (!file) return toast.error(t("apply.needFile"));
     setBusy(true);
     try {
-      const text = await extractTextFromFile(file);
-      if (!text || text.trim().length < 50) throw new Error(t("apply.tooShort"));
+      const raw = await extractTextFromFile(file);
+      const text = (raw || "").replace(/\s+/g, " ").trim().slice(0, 20000);
+      if (text.length < 50) throw new Error(t("apply.tooShort"));
       const res = await fetch("/api/public/apply", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ jobId, name, email, cvText: text, fileName: file.name }),
       });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body?.error || "Submission failed");
+      const bodyText = await res.text();
+      let body: any = {};
+      try { body = JSON.parse(bodyText); } catch { body = { error: `Server error (${res.status})` }; }
+      if (!res.ok || !body?.ok) throw new Error(body?.error || "Submission failed");
       setDone(true);
     } catch (err: any) {
       toast.error(err?.message || "Something went wrong");
