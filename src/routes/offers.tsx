@@ -4,9 +4,9 @@ import Offers from "@/pages/Offers";
 export const Route = createFileRoute("/offers")({
   head: () => ({
     meta: [
-      { title: "Offers \u2014 HireSense AI" },
+      { title: "Offers \u2014 Hanksense AI" },
       { name: "description", content: "Draft, send and track job offers, and trigger the hiring cascade on acceptance." },
-      { property: "og:title", content: "Offers \u2014 HireSense AI" },
+      { property: "og:title", content: "Offers \u2014 Hanksense AI" },
       { property: "og:description", content: "Draft, send and track job offers, and trigger the hiring cascade on acceptance." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -4,9 +4,9 @@ import Signup from "@/pages/Signup";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Create Account \u2014 HireSense AI" },
+      { title: "Create Account \u2014 Hanksense AI" },
       { name: "description", content: "Sign up as a lecturer or join your class with a student code." },
-      { property: "og:title", content: "Create Account \u2014 HireSense AI" },
+      { property: "og:title", content: "Create Account \u2014 Hanksense AI" },
       { property: "og:description", content: "Sign up as a lecturer or join your class with a student code." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

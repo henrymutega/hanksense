@@ -8,13 +8,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useLecturerState } from "@/lib/lecturer";
 import type { SessionJob } from "@/lib/session-jobs";
-import { Upload, Loader2, Play, ShieldCheck, FileText } from "lucide-react";
+import { Upload, Loader2, Play, ShieldCheck, FileText, Link2, Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { getPublicApplyUrl } from "@/lib/public-apply-url";
 
 const Route = getRouteApi("/screening");
 
 
+
+type InboxRow = { id: string; name: string; email: string | null; cv_text: string | null; created_at: string };
 
 type Row = { id: string; file: File; status: "queued" | "parsing" | "scoring" | "saving" | "done" | "error"; error?: string; score?: number; name?: string };
 
@@ -47,6 +50,55 @@ function ScreeningPage() {
   }, [user?.id, role]);
 
   const job = jobs.find(j => j.id === jobId);
+
+  // Applications submitted through the public apply link (stage = "applied")
+  const [inbox, setInbox] = useState<InboxRow[]>([]);
+  const [inboxBusy, setInboxBusy] = useState(false);
+
+  async function loadInbox(id: string) {
+    if (!id) { setInbox([]); return; }
+    const { data } = await supabase
+      .from("session_candidates" as any)
+      .select("id, name, email, cv_text, created_at")
+      .eq("job_id", id)
+      .eq("stage", "applied")
+      .order("created_at", { ascending: false });
+    setInbox(((data as any[]) || []) as InboxRow[]);
+  }
+  useEffect(() => { loadInbox(jobId); }, [jobId]);
+
+  async function screenInbox() {
+    if (!job) return;
+    setInboxBusy(true);
+    let ok = 0;
+    for (const a of inbox) {
+      try {
+        const text = a.cv_text || "";
+        if (text.length < 20) continue;
+        const profile = await parseFn({ data: { cvText: text, fileName: a.name } });
+        const match = await matchFn({ data: { cvText: text, jobTitle: job.title, requiredSkills: job.required_skills, preferredSkills: job.preferred_skills, summary: job.summary || "" } });
+        await supabase.from("session_candidates" as any).update({
+          name: profile.fullName || a.name,
+          email: a.email || profile.email || null,
+          cv_summary: profile.summary,
+          skills: profile.skills,
+          experience_years: profile.yearsExperience,
+          score: match.matchScore,
+          ai_explanation: match.recommendation,
+          matching_skills: match.requiredSkillsMatched,
+          missing_skills: match.missingSkills,
+          recommendation: match.recommendation,
+          stage: "ai_screened",
+        }).eq("id", a.id);
+        ok++;
+      } catch (e: any) {
+        toast.error(e?.message || "Screening failed");
+      }
+    }
+    setInboxBusy(false);
+    await loadInbox(jobId);
+    if (ok) toast.success(t("screening.complete"));
+  }
 
   if (!isLecturer && role !== "student") return <div className="text-sm text-muted-foreground">{t("screening.lecturerOnly")}</div>;
 
@@ -106,8 +158,46 @@ function ScreeningPage() {
           </select>
           {job && <div className="text-xs text-muted-foreground mt-1">{t("screening.reqPref", { req: job.required_skills.length, pref: job.preferred_skills.length })}</div>}
         </div>
-        {!jobs.length && <Link to="/ai-jobs" className="text-xs bg-primary text-primary-foreground px-3 py-2 rounded">{t("screening.createJobFirst")}</Link>}
+        {job ? (
+          <button
+            onClick={() => { navigator.clipboard.writeText(getPublicApplyUrl(job.id)); toast.success(t("screening.linkCopied")); }}
+            className="text-xs border border-border px-3 py-2 rounded hover:bg-accent inline-flex items-center gap-1"
+          >
+            <Link2 className="w-3 h-3" /> {t("screening.shareLink")}
+          </button>
+        ) : (!jobs.length && <Link to="/ai-jobs" className="text-xs bg-primary text-primary-foreground px-3 py-2 rounded">{t("screening.createJobFirst")}</Link>)}
       </div>
+
+      {/* Applications received through the public link */}
+      {job && (
+        <div className="bg-card border border-border rounded-xl p-4 mb-4">
+          <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
+            <div>
+              <h2 className="text-sm font-medium flex items-center gap-1.5"><Inbox className="w-4 h-4" /> {t("screening.inbox")} ({inbox.length})</h2>
+              <p className="text-xs text-muted-foreground">{t("screening.inboxHint")}</p>
+            </div>
+            {inbox.length > 0 && (
+              <button onClick={screenInbox} disabled={!canWrite || inboxBusy} className="text-xs bg-primary text-primary-foreground px-3 py-2 rounded inline-flex items-center gap-1.5 disabled:opacity-50">
+                {inboxBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />} {t("screening.screenApplications")}
+              </button>
+            )}
+          </div>
+          {inbox.length === 0 ? (
+            <div className="text-xs text-muted-foreground py-3">{t("screening.inboxEmpty")}</div>
+          ) : (
+            <div className="divide-y divide-border">
+              {inbox.map(a => (
+                <div key={a.id} className="py-2 flex items-center gap-3 text-sm">
+                  <FileText className="w-4 h-4 text-muted-foreground" />
+                  <div className="flex-1 min-w-0 truncate">{a.name}<span className="text-xs text-muted-foreground ml-2">{a.email}</span></div>
+                  <span className="text-xs text-muted-foreground">{new Date(a.created_at).toLocaleDateString()}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
 
       <label className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
         <input type="checkbox" checked={ack} onChange={e => setAck(e.target.checked)} />

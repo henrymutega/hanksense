@@ -4,9 +4,9 @@ import Pipeline from "@/pages/Pipeline";
 export const Route = createFileRoute("/pipeline")({
   head: () => ({
     meta: [
-      { title: "Hiring Pipeline \u2014 HireSense AI" },
+      { title: "Hiring Pipeline \u2014 Hanksense AI" },
       { name: "description", content: "Drag candidates through a seven-stage recruitment pipeline from applied to hired." },
-      { property: "og:title", content: "Hiring Pipeline \u2014 HireSense AI" },
+      { property: "og:title", content: "Hiring Pipeline \u2014 Hanksense AI" },
       { property: "og:description", content: "Drag candidates through a seven-stage recruitment pipeline from applied to hired." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

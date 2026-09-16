@@ -29,8 +29,10 @@ export function AppSidebar() {
   if (isLecturer) {
     NAV.push({ group: t("nav.teaching"), items: [
       { to: "/classes", label: t("nav.classes"), icon: School },
+      { to: "/students", label: t("nav.students"), icon: Users },
       { to: "/sessions", label: t("nav.sessions"), icon: CalendarDays },
     ]});
+
     NAV.push({ group: t("nav.aiCopilot"), items: [
       { to: "/ai-jobs", label: t("nav.aiJobs"), icon: Wand2 },
       { to: "/screening", label: t("nav.screening"), icon: UploadCloud },

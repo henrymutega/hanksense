@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { accessEnd } from "@/lib/billing";
+
 
 export type LecturerState = {
   loading: boolean;
@@ -30,12 +32,16 @@ export function useLecturerState(): LecturerState {
     (async () => {
       const [{ data: p }, { data: b }] = await Promise.all([
         supabase.from("profiles").select("account_status").eq("id", user.id).maybeSingle(),
-        supabase.from("lecturer_billing").select("status, semester_ends_at").eq("lecturer_id", user.id).maybeSingle(),
+        supabase.from("lecturer_billing").select("status, semester_ends_at, activated_at").eq("lecturer_id", user.id).maybeSingle(),
       ]);
       const accountStatus = (p?.account_status as any) ?? null;
       const billingStatus = (b?.status as any) ?? null;
-      const ends = b?.semester_ends_at ?? null;
+      // The access window is anchored on the activation date (7d trial / 90d active).
+      const endDate = accessEnd(b as any);
+      const ends = endDate ? endDate.toISOString() : null;
+
       const notExpired = ends ? new Date(ends).getTime() > Date.now() : false;
+
       const canWrite = role === "admin" || (accountStatus === "approved" && (billingStatus === "active" || billingStatus === "trial") && notExpired);
       setS({ loading: false, accountStatus, billingStatus, semesterEndsAt: ends, canWrite, isStudent: false });
     })();

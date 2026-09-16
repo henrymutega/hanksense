@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.can_access_candidate(uuid, uuid) FROM anon, authenticated;

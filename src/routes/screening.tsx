@@ -4,9 +4,9 @@ import Screening from "@/pages/Screening";
 export const Route = createFileRoute("/screening")({
   head: () => ({
     meta: [
-      { title: "CV Screening \u2014 HireSense AI" },
+      { title: "CV Screening \u2014 Hanksense AI" },
       { name: "description", content: "Upload CVs and let AI parse, score and match applicants to your job posting." },
-      { property: "og:title", content: "CV Screening \u2014 HireSense AI" },
+      { property: "og:title", content: "CV Screening \u2014 Hanksense AI" },
       { property: "og:description", content: "Upload CVs and let AI parse, score and match applicants to your job posting." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

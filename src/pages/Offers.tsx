@@ -204,7 +204,7 @@ function OffersPage() {
                 </div>
 
                 <div className="bg-muted/40 border border-border rounded-lg p-5 text-sm font-serif max-h-[440px] overflow-y-auto">
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">HireSense · Confidential</div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Hanksense · Confidential</div>
                   <p>Dear <strong>{selected.name}</strong>,</p>
                   <p className="mt-2">We are delighted to extend an offer for <strong>{draft.jobTitle}</strong> in the <strong>{draft.department}</strong> team, reporting to the {draft.reportTo}.</p>
                   <p className="mt-2"><strong>Compensation:</strong> {draft.currency} {draft.baseSalary.toLocaleString()} base, target bonus {draft.currency} {draft.bonus.toLocaleString()}. Equity: {draft.equity}.</p>
@@ -212,7 +212,7 @@ function OffersPage() {
                   <p className="mt-2"><strong>Benefits:</strong> {draft.benefits.join(", ")}.</p>
                   {draft.customClauses && <p className="mt-2 whitespace-pre-wrap">{draft.customClauses}</p>}
                   <p className="mt-2 text-xs">Valid for <strong>{draft.expiresInDays} days</strong>.</p>
-                  <p className="mt-3">Warm regards,<br/>HireSense Hiring Team</p>
+                  <p className="mt-3">Warm regards,<br/>Hanksense Hiring Team</p>
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-2">

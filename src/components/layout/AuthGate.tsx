@@ -10,7 +10,7 @@ import { LogoLoader, FadeTransition } from "@/components/LogoLoader";
 
 const PUBLIC_PATHS = ["/login", "/signup", "/reset-password"];
 export function isPublic(p: string) {
-  return PUBLIC_PATHS.includes(p) || p.startsWith("/join/");
+  return PUBLIC_PATHS.includes(p) || p.startsWith("/join/") || p.startsWith("/apply/");
 }
 
 export function AuthGate({ children }: { children: React.ReactNode }) {

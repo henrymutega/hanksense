@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useLecturerState } from "@/lib/lecturer";
 import type { SessionJob } from "@/lib/session-jobs";
-import { Briefcase, Sparkles, Trash2, Users, MapPin, Lock } from "lucide-react";
+import { Briefcase, Sparkles, Trash2, Users, MapPin, Lock, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { getPublicApplyUrl } from "@/lib/public-apply-url";
 
 
 
@@ -67,6 +68,11 @@ function JobsPage() {
     if (!confirm(t("jobs.confirmDelete", { title: j.title }))) return;
     const { error } = await supabase.from("session_jobs" as any).delete().eq("id", j.id);
     if (error) toast.error(error.message); else { toast.success(t("jobs.deleted")); load(); }
+  }
+
+  function copyApplyLink(jobId: string) {
+    navigator.clipboard.writeText(getPublicApplyUrl(jobId));
+    toast.success(t("jobs.linkCopied"));
   }
 
   const canCreate = isLecturer || isStudent;
@@ -174,15 +180,17 @@ function JobsPage() {
                 {j.required_skills.slice(0, 6).map(s => <span key={s} className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded">{s}</span>)}
               </div>
               <div className="flex gap-2 flex-wrap">
+                <Link to="/jobs/$id" params={{ id: j.id }} className="text-xs bg-primary text-primary-foreground px-2.5 py-1.5 rounded">{t("jobs.viewDetails")}</Link>
                 {canManage ? (
                   <>
+                    <button onClick={() => copyApplyLink(j.id)} className="text-xs border border-border px-2.5 py-1.5 rounded hover:bg-accent inline-flex items-center gap-1"><Link2 className="w-3 h-3" />{t("jobs.copyApplyLink")}</button>
                     <button onClick={() => nav({ to: "/screening", search: { job: j.id } as any })} className="text-xs bg-primary/10 text-primary px-2.5 py-1.5 rounded hover:bg-primary hover:text-primary-foreground">{t("jobs.uploadCVs")}</button>
                     <Link to="/pipeline" search={{ job: j.id } as any} className="text-xs border border-border px-2.5 py-1.5 rounded hover:bg-accent">{t("jobs.pipeline")}</Link>
                     <button onClick={() => close(j)} disabled={!canWrite} className="text-xs border border-border px-2.5 py-1.5 rounded hover:bg-accent disabled:opacity-50">{j.status === "closed" ? t("jobs.reopen") : t("jobs.close")}</button>
                     <button onClick={() => del(j)} disabled={!canWrite} className="text-xs border border-border px-2.5 py-1.5 rounded hover:bg-destructive hover:text-destructive-foreground disabled:opacity-50"><Trash2 className="w-3 h-3" /></button>
                   </>
                 ) : (
-                  <Link to="/pipeline" search={{ job: j.id } as any} className="text-xs bg-primary text-primary-foreground px-2.5 py-1.5 rounded">{t("jobs.viewCandidates")}</Link>
+                  <Link to="/pipeline" search={{ job: j.id } as any} className="text-xs border border-border px-2.5 py-1.5 rounded hover:bg-accent">{t("jobs.viewCandidates")}</Link>
                 )}
                 {!canWrite && canManage && <span className="text-[10px] text-muted-foreground flex items-center gap-1"><Lock className="w-3 h-3" /> {t("common.readOnly")}</span>}
               </div>

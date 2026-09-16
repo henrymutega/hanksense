@@ -31,13 +31,21 @@ import { Route as SelectRoleRouteImport } from './routes/select-role'
 import { Route as SessionsRouteImport } from './routes/sessions'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SimulationRouteImport } from './routes/simulation'
+import { Route as StudentsRouteImport } from './routes/students'
 import { Route as TalentPoolRouteImport } from './routes/talent-pool'
+import { Route as ApplyJobIdRouteImport } from './routes/apply.$jobId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates_.$id'
 import { Route as ClassesIdRouteImport } from './routes/classes_.$id'
 import { Route as InterviewRoomIdRouteImport } from './routes/interview-room.$id'
+import { Route as JobsIdRouteImport } from './routes/jobs_.$id'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as PresentSessionIdRouteImport } from './routes/present.$sessionId'
 import { Route as SessionsIdRouteImport } from './routes/sessions_.$id'
+import { Route as AdminLecturersIdRouteImport } from './routes/admin_.lecturers.$id'
+import { Route as ApiPublicAiGenerateRouteImport } from './routes/api/public/ai-generate'
+import { Route as ApiPublicApplyRouteImport } from './routes/api/public/apply'
+import { Route as ApiPublicJobRouteImport } from './routes/api/public/job'
+import { Route as ApiPublicApplyPageJobIdRouteImport } from './routes/api/public/apply-page.$jobId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -149,9 +157,19 @@ const SimulationRoute = SimulationRouteImport.update({
   path: '/simulation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentsRoute = StudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TalentPoolRoute = TalentPoolRouteImport.update({
   id: '/talent-pool',
   path: '/talent-pool',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApplyJobIdRoute = ApplyJobIdRouteImport.update({
+  id: '/apply/$jobId',
+  path: '/apply/$jobId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CandidatesIdRoute = CandidatesIdRouteImport.update({
@@ -169,6 +187,11 @@ const InterviewRoomIdRoute = InterviewRoomIdRouteImport.update({
   path: '/interview-room/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsIdRoute = JobsIdRouteImport.update({
+  id: '/jobs_/$id',
+  path: '/jobs/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JoinCodeRoute = JoinCodeRouteImport.update({
   id: '/join/$code',
   path: '/join/$code',
@@ -182,6 +205,31 @@ const PresentSessionIdRoute = PresentSessionIdRouteImport.update({
 const SessionsIdRoute = SessionsIdRouteImport.update({
   id: '/sessions_/$id',
   path: '/sessions/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLecturersIdRoute = AdminLecturersIdRouteImport.update({
+  id: '/admin_/lecturers/$id',
+  path: '/admin/lecturers/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicAiGenerateRoute = ApiPublicAiGenerateRouteImport.update({
+  id: '/api/public/ai-generate',
+  path: '/api/public/ai-generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicApplyRoute = ApiPublicApplyRouteImport.update({
+  id: '/api/public/apply',
+  path: '/api/public/apply',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicJobRoute = ApiPublicJobRouteImport.update({
+  id: '/api/public/job',
+  path: '/api/public/job',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicApplyPageJobIdRoute = ApiPublicApplyPageJobIdRouteImport.update({
+  id: '/api/public/apply-page/$jobId',
+  path: '/api/public/apply-page/$jobId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -208,13 +256,21 @@ export interface FileRoutesByFullPath {
   '/sessions': typeof SessionsRoute
   '/signup': typeof SignupRoute
   '/simulation': typeof SimulationRoute
+  '/students': typeof StudentsRoute
   '/talent-pool': typeof TalentPoolRoute
+  '/apply/$jobId': typeof ApplyJobIdRoute
   '/candidates/$id': typeof CandidatesIdRoute
   '/classes/$id': typeof ClassesIdRoute
   '/interview-room/$id': typeof InterviewRoomIdRoute
+  '/jobs/$id': typeof JobsIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/present/$sessionId': typeof PresentSessionIdRoute
   '/sessions/$id': typeof SessionsIdRoute
+  '/admin/lecturers/$id': typeof AdminLecturersIdRoute
+  '/api/public/ai-generate': typeof ApiPublicAiGenerateRoute
+  '/api/public/apply': typeof ApiPublicApplyRoute
+  '/api/public/job': typeof ApiPublicJobRoute
+  '/api/public/apply-page/$jobId': typeof ApiPublicApplyPageJobIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -239,13 +295,21 @@ export interface FileRoutesByTo {
   '/sessions': typeof SessionsRoute
   '/signup': typeof SignupRoute
   '/simulation': typeof SimulationRoute
+  '/students': typeof StudentsRoute
   '/talent-pool': typeof TalentPoolRoute
+  '/apply/$jobId': typeof ApplyJobIdRoute
   '/candidates/$id': typeof CandidatesIdRoute
   '/classes/$id': typeof ClassesIdRoute
   '/interview-room/$id': typeof InterviewRoomIdRoute
+  '/jobs/$id': typeof JobsIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/present/$sessionId': typeof PresentSessionIdRoute
   '/sessions/$id': typeof SessionsIdRoute
+  '/admin/lecturers/$id': typeof AdminLecturersIdRoute
+  '/api/public/ai-generate': typeof ApiPublicAiGenerateRoute
+  '/api/public/apply': typeof ApiPublicApplyRoute
+  '/api/public/job': typeof ApiPublicJobRoute
+  '/api/public/apply-page/$jobId': typeof ApiPublicApplyPageJobIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -271,13 +335,21 @@ export interface FileRoutesById {
   '/sessions': typeof SessionsRoute
   '/signup': typeof SignupRoute
   '/simulation': typeof SimulationRoute
+  '/students': typeof StudentsRoute
   '/talent-pool': typeof TalentPoolRoute
+  '/apply/$jobId': typeof ApplyJobIdRoute
   '/candidates_/$id': typeof CandidatesIdRoute
   '/classes_/$id': typeof ClassesIdRoute
   '/interview-room/$id': typeof InterviewRoomIdRoute
+  '/jobs_/$id': typeof JobsIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/present/$sessionId': typeof PresentSessionIdRoute
   '/sessions_/$id': typeof SessionsIdRoute
+  '/admin_/lecturers/$id': typeof AdminLecturersIdRoute
+  '/api/public/ai-generate': typeof ApiPublicAiGenerateRoute
+  '/api/public/apply': typeof ApiPublicApplyRoute
+  '/api/public/job': typeof ApiPublicJobRoute
+  '/api/public/apply-page/$jobId': typeof ApiPublicApplyPageJobIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -304,13 +376,21 @@ export interface FileRouteTypes {
     | '/sessions'
     | '/signup'
     | '/simulation'
+    | '/students'
     | '/talent-pool'
+    | '/apply/$jobId'
     | '/candidates/$id'
     | '/classes/$id'
     | '/interview-room/$id'
+    | '/jobs/$id'
     | '/join/$code'
     | '/present/$sessionId'
     | '/sessions/$id'
+    | '/admin/lecturers/$id'
+    | '/api/public/ai-generate'
+    | '/api/public/apply'
+    | '/api/public/job'
+    | '/api/public/apply-page/$jobId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -335,13 +415,21 @@ export interface FileRouteTypes {
     | '/sessions'
     | '/signup'
     | '/simulation'
+    | '/students'
     | '/talent-pool'
+    | '/apply/$jobId'
     | '/candidates/$id'
     | '/classes/$id'
     | '/interview-room/$id'
+    | '/jobs/$id'
     | '/join/$code'
     | '/present/$sessionId'
     | '/sessions/$id'
+    | '/admin/lecturers/$id'
+    | '/api/public/ai-generate'
+    | '/api/public/apply'
+    | '/api/public/job'
+    | '/api/public/apply-page/$jobId'
   id:
     | '__root__'
     | '/'
@@ -366,13 +454,21 @@ export interface FileRouteTypes {
     | '/sessions'
     | '/signup'
     | '/simulation'
+    | '/students'
     | '/talent-pool'
+    | '/apply/$jobId'
     | '/candidates_/$id'
     | '/classes_/$id'
     | '/interview-room/$id'
+    | '/jobs_/$id'
     | '/join/$code'
     | '/present/$sessionId'
     | '/sessions_/$id'
+    | '/admin_/lecturers/$id'
+    | '/api/public/ai-generate'
+    | '/api/public/apply'
+    | '/api/public/job'
+    | '/api/public/apply-page/$jobId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -398,13 +494,21 @@ export interface RootRouteChildren {
   SessionsRoute: typeof SessionsRoute
   SignupRoute: typeof SignupRoute
   SimulationRoute: typeof SimulationRoute
+  StudentsRoute: typeof StudentsRoute
   TalentPoolRoute: typeof TalentPoolRoute
+  ApplyJobIdRoute: typeof ApplyJobIdRoute
   CandidatesIdRoute: typeof CandidatesIdRoute
   ClassesIdRoute: typeof ClassesIdRoute
   InterviewRoomIdRoute: typeof InterviewRoomIdRoute
+  JobsIdRoute: typeof JobsIdRoute
   JoinCodeRoute: typeof JoinCodeRoute
   PresentSessionIdRoute: typeof PresentSessionIdRoute
   SessionsIdRoute: typeof SessionsIdRoute
+  AdminLecturersIdRoute: typeof AdminLecturersIdRoute
+  ApiPublicAiGenerateRoute: typeof ApiPublicAiGenerateRoute
+  ApiPublicApplyRoute: typeof ApiPublicApplyRoute
+  ApiPublicJobRoute: typeof ApiPublicJobRoute
+  ApiPublicApplyPageJobIdRoute: typeof ApiPublicApplyPageJobIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -563,11 +667,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SimulationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/students': {
+      id: '/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof StudentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/talent-pool': {
       id: '/talent-pool'
       path: '/talent-pool'
       fullPath: '/talent-pool'
       preLoaderRoute: typeof TalentPoolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apply/$jobId': {
+      id: '/apply/$jobId'
+      path: '/apply/$jobId'
+      fullPath: '/apply/$jobId'
+      preLoaderRoute: typeof ApplyJobIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/candidates_/$id': {
@@ -591,6 +709,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InterviewRoomIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs_/$id': {
+      id: '/jobs_/$id'
+      path: '/jobs/$id'
+      fullPath: '/jobs/$id'
+      preLoaderRoute: typeof JobsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/join/$code': {
       id: '/join/$code'
       path: '/join/$code'
@@ -610,6 +735,41 @@ declare module '@tanstack/react-router' {
       path: '/sessions/$id'
       fullPath: '/sessions/$id'
       preLoaderRoute: typeof SessionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/lecturers/$id': {
+      id: '/admin_/lecturers/$id'
+      path: '/admin/lecturers/$id'
+      fullPath: '/admin/lecturers/$id'
+      preLoaderRoute: typeof AdminLecturersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ai-generate': {
+      id: '/api/public/ai-generate'
+      path: '/api/public/ai-generate'
+      fullPath: '/api/public/ai-generate'
+      preLoaderRoute: typeof ApiPublicAiGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/apply': {
+      id: '/api/public/apply'
+      path: '/api/public/apply'
+      fullPath: '/api/public/apply'
+      preLoaderRoute: typeof ApiPublicApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/job': {
+      id: '/api/public/job'
+      path: '/api/public/job'
+      fullPath: '/api/public/job'
+      preLoaderRoute: typeof ApiPublicJobRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/apply-page/$jobId': {
+      id: '/api/public/apply-page/$jobId'
+      path: '/api/public/apply-page/$jobId'
+      fullPath: '/api/public/apply-page/$jobId'
+      preLoaderRoute: typeof ApiPublicApplyPageJobIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -638,13 +798,21 @@ const rootRouteChildren: RootRouteChildren = {
   SessionsRoute: SessionsRoute,
   SignupRoute: SignupRoute,
   SimulationRoute: SimulationRoute,
+  StudentsRoute: StudentsRoute,
   TalentPoolRoute: TalentPoolRoute,
+  ApplyJobIdRoute: ApplyJobIdRoute,
   CandidatesIdRoute: CandidatesIdRoute,
   ClassesIdRoute: ClassesIdRoute,
   InterviewRoomIdRoute: InterviewRoomIdRoute,
+  JobsIdRoute: JobsIdRoute,
   JoinCodeRoute: JoinCodeRoute,
   PresentSessionIdRoute: PresentSessionIdRoute,
   SessionsIdRoute: SessionsIdRoute,
+  AdminLecturersIdRoute: AdminLecturersIdRoute,
+  ApiPublicAiGenerateRoute: ApiPublicAiGenerateRoute,
+  ApiPublicApplyRoute: ApiPublicApplyRoute,
+  ApiPublicJobRoute: ApiPublicJobRoute,
+  ApiPublicApplyPageJobIdRoute: ApiPublicApplyPageJobIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
