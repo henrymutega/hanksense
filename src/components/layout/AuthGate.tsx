@@ -63,11 +63,9 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     nav({ to: target });
   }, [user?.id, role, loading, path]);
 
-  // Keep the loader overlay until the user is fully resolved, then let the
-  // loaded page fade in underneath while the loader fades out.
   const [booted, setBooted] = React.useState(false);
   React.useEffect(() => {
-    if (!loading && user) setBooted(true);
+    if (!loading) setBooted(true);
   }, [loading, user]);
 
   if (isPublic(path)) return <>{children}</>;
