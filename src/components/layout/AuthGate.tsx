@@ -41,8 +41,13 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
 
   // invalidate caches on auth change
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange(() => {
-      router.invalidate(); qc.invalidateQueries();
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      setTimeout(() => {
+        router.invalidate();
+        if (event === "SIGNED_OUT") qc.clear();
+        else qc.invalidateQueries();
+      }, 0);
     });
     return () => data.subscription.unsubscribe();
   }, [router, qc]);

@@ -22,9 +22,15 @@ function LoginPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
-    setBusy(false);
-    if (error) toast.error(error.message); else nav({ to: "/" });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
+      if (error) toast.error(error.message);
+      else nav({ to: "/" });
+    } catch {
+      toast.error(t("auth.signInError", { defaultValue: "Sign-in could not be completed. Please try again." }));
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function google() {
