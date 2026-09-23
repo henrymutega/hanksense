@@ -32,6 +32,7 @@ export function StudentsDirectory({ lecturerId }: { lecturerId?: string }) {
   const [classFilter, setClassFilter] = useState<string>("all");
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<Record<string, boolean>>({});
+  const [extraSlots, setExtraSlots] = useState<Record<string, number>>({});
 
   useEffect(() => {
     let cancelled = false;
@@ -125,10 +126,20 @@ export function StudentsDirectory({ lecturerId }: { lecturerId?: string }) {
         if (c) { rec.candidates += c.total; rec.hired += c.hired; }
       });
 
+      // Purchased extra job-post slots (¥20 top-ups approved by an admin)
+      const extras: Record<string, number> = {};
+      if (studentIds.length) {
+        const { data: credits } = await supabase
+          .from("student_job_credits")
+          .select("student_id, extra_slots")
+          .in("student_id", studentIds);
+        ((credits as any[]) ?? []).forEach(c => { extras[c.student_id] = (extras[c.student_id] ?? 0) + (c.extra_slots ?? 0); });
+      }
+
       const list = Array.from(byStudent.values()).sort((a, b) =>
         (a.full_name || a.email || "").localeCompare(b.full_name || b.email || ""),
       );
-      if (!cancelled) { setStudents(list); setLoading(false); }
+      if (!cancelled) { setStudents(list); setExtraSlots(extras); setLoading(false); }
     })();
     return () => { cancelled = true; };
   }, [lecturerId]);
@@ -212,7 +223,7 @@ export function StudentsDirectory({ lecturerId }: { lecturerId?: string }) {
                     ))}
                   </div>
                   <div className="flex gap-4 text-xs text-muted-foreground shrink-0">
-                    <span>{t("students.jobsShort")}: <b className="text-foreground">{s.jobs.length}/{STUDENT_JOB_LIMIT}</b></span>
+                    <span>{t("students.jobsShort")}: <b className="text-foreground">{s.jobs.length}/{STUDENT_JOB_LIMIT + (extraSlots[s.id] ?? 0)}</b></span>
                     <span>{t("students.candidatesShort")}: <b className="text-foreground">{s.candidates}</b></span>
                     <span>{t("students.sessionsShort")}: <b className="text-foreground">{s.sessions.length}</b></span>
                   </div>

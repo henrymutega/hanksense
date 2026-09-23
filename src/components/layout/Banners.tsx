@@ -8,17 +8,22 @@ import { accessEnd } from "@/lib/billing";
 export function ViewerBanner() {
   const { role, user } = useAuth();
   const [used, setUsed] = React.useState<number | null>(null);
+  const [extra, setExtra] = React.useState(0);
   React.useEffect(() => {
     if (!user || role !== "student") return;
     supabase.from("session_jobs").select("id", { count: "exact", head: true }).eq("created_by", user.id).then(({ count }) => setUsed(count ?? 0));
+    supabase.from("student_job_credits").select("extra_slots").eq("student_id", user.id).then(({ data }) => {
+      setExtra(((data as any[]) ?? []).reduce((s, r) => s + (r.extra_slots ?? 0), 0));
+    });
   }, [user?.id, role]);
   if (role !== "student") return null;
-  const remaining = used == null ? "…" : Math.max(0, 3 - used);
+  const limit = 3 + extra;
+  const remaining = used == null ? "…" : Math.max(0, limit - used);
   return (
     <div className="bg-primary/10 border-b border-primary/30 text-primary text-xs px-6 py-1.5 flex items-center gap-2 flex-wrap">
       <span className="uppercase tracking-widest font-semibold text-[10px] px-1.5 py-0.5 rounded bg-primary/20">Student</span>
-      <span>You can create up to 3 job posts per class under your lecturer.</span>
-      <span className="ml-auto font-medium">Posts remaining: {remaining}/3</span>
+      <span>You can create up to {limit} job posts per class under your lecturer — top up ¥20 for 3 more.</span>
+      <span className="ml-auto font-medium">Posts remaining: {remaining}/{limit}</span>
     </div>
   );
 }

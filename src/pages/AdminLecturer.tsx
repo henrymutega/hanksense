@@ -4,6 +4,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/PageHeader";
 import { StudentsDirectory } from "@/components/StudentsDirectory";
+import { AdminTopUpRequests } from "@/components/AdminTopUpRequests";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { ArrowLeft, School } from "lucide-react";
@@ -115,6 +116,7 @@ function AdminLecturerPage() {
 
       <h2 className="font-semibold mb-3">{t("adminLecturer.studentsHeading")}</h2>
       <StudentsDirectory lecturerId={id} />
+      {role === "admin" && <AdminTopUpRequests lecturerId={id} />}
     </div>
   );
 }

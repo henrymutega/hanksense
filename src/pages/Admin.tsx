@@ -8,6 +8,7 @@ import { Users, GraduationCap, School, CalendarDays, CheckCircle2, XCircle, Doll
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { accessEnd, accessActive, daysLeft as daysLeftOf } from "@/lib/billing";
+import { AdminTopUpRequests } from "@/components/AdminTopUpRequests";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -316,6 +317,8 @@ function AdminPage() {
           </tbody>
         </table>
       </div>
+
+      <AdminTopUpRequests />
     </div>
   );
 }

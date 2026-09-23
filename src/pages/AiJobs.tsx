@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useLecturerState, useStudentJobUsage } from "@/lib/lecturer";
 import { generateJobFromPrompt, type AIJob } from "@/lib/ai-jobs.functions";
+import { StudentTopUpCard } from "@/components/StudentTopUpCard";
 import { Wand2, Loader2, ArrowRight, Check, AlertTriangle, Sparkles, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
@@ -151,12 +152,7 @@ function AiJobsPage() {
         </div>
       )}
       {isStudent && (
-        <div className={`text-sm rounded-md p-3 mb-4 flex items-center gap-2 border ${quotaReached ? "bg-destructive/10 border-destructive/40 text-destructive" : "bg-primary/5 border-primary/30 text-primary"}`}>
-          <Sparkles className="w-4 h-4" />
-          {quotaReached
-            ? "You've reached the 3-post limit under your lecturer. Ask your lecturer to remove an existing post to create a new one."
-            : `Student mode — ${usage.remaining} of ${usage.limit} job posts remaining.`}
-        </div>
+        <StudentTopUpCard usage={usage} lecturerId={selectedClass?.lecturer_id ?? null} />
       )}
 
 
