@@ -16,6 +16,7 @@ import { Route as BillingRouteImport } from './routes/billing'
 import { Route as CandidatesRouteImport } from './routes/candidates'
 import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as EthicsRouteImport } from './routes/ethics'
+import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as JoinSessionRouteImport } from './routes/join-session'
@@ -36,6 +37,13 @@ import { Route as TalentPoolRouteImport } from './routes/talent-pool'
 import { Route as ApplyJobIdRouteImport } from './routes/apply.$jobId'
 import { Route as CandidatesIdRouteImport } from './routes/candidates_.$id'
 import { Route as ClassesIdRouteImport } from './routes/classes_.$id'
+import { Route as GuidesIndexRouteImport } from './routes/guides.index'
+import { Route as GuidesAtsRouteImport } from './routes/guides.ats'
+import { Route as GuidesCoverLettersRouteImport } from './routes/guides.cover-letters'
+import { Route as GuidesCvWritingRouteImport } from './routes/guides.cv-writing'
+import { Route as GuidesEmailTemplatesRouteImport } from './routes/guides.email-templates'
+import { Route as GuidesInterviewPrepRouteImport } from './routes/guides.interview-prep'
+import { Route as GuidesJobDecodingRouteImport } from './routes/guides.job-decoding'
 import { Route as InterviewRoomIdRouteImport } from './routes/interview-room.$id'
 import { Route as JobsIdRouteImport } from './routes/jobs_.$id'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
@@ -82,6 +90,11 @@ const ClassesRoute = ClassesRouteImport.update({
 const EthicsRoute = EthicsRouteImport.update({
   id: '/ethics',
   path: '/ethics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesRoute = GuidesRouteImport.update({
+  id: '/guides',
+  path: '/guides',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InterviewsRoute = InterviewsRouteImport.update({
@@ -184,6 +197,41 @@ const ClassesIdRoute = ClassesIdRouteImport.update({
   path: '/classes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GuidesRoute,
+} as any)
+const GuidesAtsRoute = GuidesAtsRouteImport.update({
+  id: '/ats',
+  path: '/ats',
+  getParentRoute: () => GuidesRoute,
+} as any)
+const GuidesCoverLettersRoute = GuidesCoverLettersRouteImport.update({
+  id: '/cover-letters',
+  path: '/cover-letters',
+  getParentRoute: () => GuidesRoute,
+} as any)
+const GuidesCvWritingRoute = GuidesCvWritingRouteImport.update({
+  id: '/cv-writing',
+  path: '/cv-writing',
+  getParentRoute: () => GuidesRoute,
+} as any)
+const GuidesEmailTemplatesRoute = GuidesEmailTemplatesRouteImport.update({
+  id: '/email-templates',
+  path: '/email-templates',
+  getParentRoute: () => GuidesRoute,
+} as any)
+const GuidesInterviewPrepRoute = GuidesInterviewPrepRouteImport.update({
+  id: '/interview-prep',
+  path: '/interview-prep',
+  getParentRoute: () => GuidesRoute,
+} as any)
+const GuidesJobDecodingRoute = GuidesJobDecodingRouteImport.update({
+  id: '/job-decoding',
+  path: '/job-decoding',
+  getParentRoute: () => GuidesRoute,
+} as any)
 const InterviewRoomIdRoute = InterviewRoomIdRouteImport.update({
   id: '/interview-room/$id',
   path: '/interview-room/$id',
@@ -253,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/candidates': typeof CandidatesRoute
   '/classes': typeof ClassesRoute
   '/ethics': typeof EthicsRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/interviews': typeof InterviewsRoute
   '/jobs': typeof JobsRoute
   '/join-session': typeof JoinSessionRoute
@@ -273,11 +322,18 @@ export interface FileRoutesByFullPath {
   '/apply/$jobId': typeof ApplyJobIdRoute
   '/candidates/$id': typeof CandidatesIdRoute
   '/classes/$id': typeof ClassesIdRoute
+  '/guides/ats': typeof GuidesAtsRoute
+  '/guides/cover-letters': typeof GuidesCoverLettersRoute
+  '/guides/cv-writing': typeof GuidesCvWritingRoute
+  '/guides/email-templates': typeof GuidesEmailTemplatesRoute
+  '/guides/interview-prep': typeof GuidesInterviewPrepRoute
+  '/guides/job-decoding': typeof GuidesJobDecodingRoute
   '/interview-room/$id': typeof InterviewRoomIdRoute
   '/jobs/$id': typeof JobsIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/present/$sessionId': typeof PresentSessionIdRoute
   '/sessions/$id': typeof SessionsIdRoute
+  '/guides/': typeof GuidesIndexRoute
   '/admin/lecturers/$id': typeof AdminLecturersIdRoute
   '/api/public/ai-generate': typeof ApiPublicAiGenerateRoute
   '/api/public/apply': typeof ApiPublicApplyRoute
@@ -314,11 +370,18 @@ export interface FileRoutesByTo {
   '/apply/$jobId': typeof ApplyJobIdRoute
   '/candidates/$id': typeof CandidatesIdRoute
   '/classes/$id': typeof ClassesIdRoute
+  '/guides/ats': typeof GuidesAtsRoute
+  '/guides/cover-letters': typeof GuidesCoverLettersRoute
+  '/guides/cv-writing': typeof GuidesCvWritingRoute
+  '/guides/email-templates': typeof GuidesEmailTemplatesRoute
+  '/guides/interview-prep': typeof GuidesInterviewPrepRoute
+  '/guides/job-decoding': typeof GuidesJobDecodingRoute
   '/interview-room/$id': typeof InterviewRoomIdRoute
   '/jobs/$id': typeof JobsIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/present/$sessionId': typeof PresentSessionIdRoute
   '/sessions/$id': typeof SessionsIdRoute
+  '/guides': typeof GuidesIndexRoute
   '/admin/lecturers/$id': typeof AdminLecturersIdRoute
   '/api/public/ai-generate': typeof ApiPublicAiGenerateRoute
   '/api/public/apply': typeof ApiPublicApplyRoute
@@ -336,6 +399,7 @@ export interface FileRoutesById {
   '/candidates': typeof CandidatesRoute
   '/classes': typeof ClassesRoute
   '/ethics': typeof EthicsRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/interviews': typeof InterviewsRoute
   '/jobs': typeof JobsRoute
   '/join-session': typeof JoinSessionRoute
@@ -356,11 +420,18 @@ export interface FileRoutesById {
   '/apply/$jobId': typeof ApplyJobIdRoute
   '/candidates_/$id': typeof CandidatesIdRoute
   '/classes_/$id': typeof ClassesIdRoute
+  '/guides/ats': typeof GuidesAtsRoute
+  '/guides/cover-letters': typeof GuidesCoverLettersRoute
+  '/guides/cv-writing': typeof GuidesCvWritingRoute
+  '/guides/email-templates': typeof GuidesEmailTemplatesRoute
+  '/guides/interview-prep': typeof GuidesInterviewPrepRoute
+  '/guides/job-decoding': typeof GuidesJobDecodingRoute
   '/interview-room/$id': typeof InterviewRoomIdRoute
   '/jobs_/$id': typeof JobsIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/present/$sessionId': typeof PresentSessionIdRoute
   '/sessions_/$id': typeof SessionsIdRoute
+  '/guides/': typeof GuidesIndexRoute
   '/admin_/lecturers/$id': typeof AdminLecturersIdRoute
   '/api/public/ai-generate': typeof ApiPublicAiGenerateRoute
   '/api/public/apply': typeof ApiPublicApplyRoute
@@ -379,6 +450,7 @@ export interface FileRouteTypes {
     | '/candidates'
     | '/classes'
     | '/ethics'
+    | '/guides'
     | '/interviews'
     | '/jobs'
     | '/join-session'
@@ -399,11 +471,18 @@ export interface FileRouteTypes {
     | '/apply/$jobId'
     | '/candidates/$id'
     | '/classes/$id'
+    | '/guides/ats'
+    | '/guides/cover-letters'
+    | '/guides/cv-writing'
+    | '/guides/email-templates'
+    | '/guides/interview-prep'
+    | '/guides/job-decoding'
     | '/interview-room/$id'
     | '/jobs/$id'
     | '/join/$code'
     | '/present/$sessionId'
     | '/sessions/$id'
+    | '/guides/'
     | '/admin/lecturers/$id'
     | '/api/public/ai-generate'
     | '/api/public/apply'
@@ -440,11 +519,18 @@ export interface FileRouteTypes {
     | '/apply/$jobId'
     | '/candidates/$id'
     | '/classes/$id'
+    | '/guides/ats'
+    | '/guides/cover-letters'
+    | '/guides/cv-writing'
+    | '/guides/email-templates'
+    | '/guides/interview-prep'
+    | '/guides/job-decoding'
     | '/interview-room/$id'
     | '/jobs/$id'
     | '/join/$code'
     | '/present/$sessionId'
     | '/sessions/$id'
+    | '/guides'
     | '/admin/lecturers/$id'
     | '/api/public/ai-generate'
     | '/api/public/apply'
@@ -461,6 +547,7 @@ export interface FileRouteTypes {
     | '/candidates'
     | '/classes'
     | '/ethics'
+    | '/guides'
     | '/interviews'
     | '/jobs'
     | '/join-session'
@@ -481,11 +568,18 @@ export interface FileRouteTypes {
     | '/apply/$jobId'
     | '/candidates_/$id'
     | '/classes_/$id'
+    | '/guides/ats'
+    | '/guides/cover-letters'
+    | '/guides/cv-writing'
+    | '/guides/email-templates'
+    | '/guides/interview-prep'
+    | '/guides/job-decoding'
     | '/interview-room/$id'
     | '/jobs_/$id'
     | '/join/$code'
     | '/present/$sessionId'
     | '/sessions_/$id'
+    | '/guides/'
     | '/admin_/lecturers/$id'
     | '/api/public/ai-generate'
     | '/api/public/apply'
@@ -503,6 +597,7 @@ export interface RootRouteChildren {
   CandidatesRoute: typeof CandidatesRoute
   ClassesRoute: typeof ClassesRoute
   EthicsRoute: typeof EthicsRoute
+  GuidesRoute: typeof GuidesRouteWithChildren
   InterviewsRoute: typeof InterviewsRoute
   JobsRoute: typeof JobsRoute
   JoinSessionRoute: typeof JoinSessionRoute
@@ -586,6 +681,13 @@ declare module '@tanstack/react-router' {
       path: '/ethics'
       fullPath: '/ethics'
       preLoaderRoute: typeof EthicsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides': {
+      id: '/guides'
+      path: '/guides'
+      fullPath: '/guides'
+      preLoaderRoute: typeof GuidesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interviews': {
@@ -728,6 +830,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClassesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/': {
+      id: '/guides/'
+      path: '/'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof GuidesRoute
+    }
+    '/guides/ats': {
+      id: '/guides/ats'
+      path: '/ats'
+      fullPath: '/guides/ats'
+      preLoaderRoute: typeof GuidesAtsRouteImport
+      parentRoute: typeof GuidesRoute
+    }
+    '/guides/cover-letters': {
+      id: '/guides/cover-letters'
+      path: '/cover-letters'
+      fullPath: '/guides/cover-letters'
+      preLoaderRoute: typeof GuidesCoverLettersRouteImport
+      parentRoute: typeof GuidesRoute
+    }
+    '/guides/cv-writing': {
+      id: '/guides/cv-writing'
+      path: '/cv-writing'
+      fullPath: '/guides/cv-writing'
+      preLoaderRoute: typeof GuidesCvWritingRouteImport
+      parentRoute: typeof GuidesRoute
+    }
+    '/guides/email-templates': {
+      id: '/guides/email-templates'
+      path: '/email-templates'
+      fullPath: '/guides/email-templates'
+      preLoaderRoute: typeof GuidesEmailTemplatesRouteImport
+      parentRoute: typeof GuidesRoute
+    }
+    '/guides/interview-prep': {
+      id: '/guides/interview-prep'
+      path: '/interview-prep'
+      fullPath: '/guides/interview-prep'
+      preLoaderRoute: typeof GuidesInterviewPrepRouteImport
+      parentRoute: typeof GuidesRoute
+    }
+    '/guides/job-decoding': {
+      id: '/guides/job-decoding'
+      path: '/job-decoding'
+      fullPath: '/guides/job-decoding'
+      preLoaderRoute: typeof GuidesJobDecodingRouteImport
+      parentRoute: typeof GuidesRoute
+    }
     '/interview-room/$id': {
       id: '/interview-room/$id'
       path: '/interview-room/$id'
@@ -815,6 +966,29 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface GuidesRouteChildren {
+  GuidesAtsRoute: typeof GuidesAtsRoute
+  GuidesCoverLettersRoute: typeof GuidesCoverLettersRoute
+  GuidesCvWritingRoute: typeof GuidesCvWritingRoute
+  GuidesEmailTemplatesRoute: typeof GuidesEmailTemplatesRoute
+  GuidesInterviewPrepRoute: typeof GuidesInterviewPrepRoute
+  GuidesJobDecodingRoute: typeof GuidesJobDecodingRoute
+  GuidesIndexRoute: typeof GuidesIndexRoute
+}
+
+const GuidesRouteChildren: GuidesRouteChildren = {
+  GuidesAtsRoute: GuidesAtsRoute,
+  GuidesCoverLettersRoute: GuidesCoverLettersRoute,
+  GuidesCvWritingRoute: GuidesCvWritingRoute,
+  GuidesEmailTemplatesRoute: GuidesEmailTemplatesRoute,
+  GuidesInterviewPrepRoute: GuidesInterviewPrepRoute,
+  GuidesJobDecodingRoute: GuidesJobDecodingRoute,
+  GuidesIndexRoute: GuidesIndexRoute,
+}
+
+const GuidesRouteWithChildren =
+  GuidesRoute._addFileChildren(GuidesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -823,6 +997,7 @@ const rootRouteChildren: RootRouteChildren = {
   CandidatesRoute: CandidatesRoute,
   ClassesRoute: ClassesRoute,
   EthicsRoute: EthicsRoute,
+  GuidesRoute: GuidesRouteWithChildren,
   InterviewsRoute: InterviewsRoute,
   JobsRoute: JobsRoute,
   JoinSessionRoute: JoinSessionRoute,
