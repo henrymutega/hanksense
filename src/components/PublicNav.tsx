@@ -2,7 +2,16 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { LANGS, setLang, type Lang } from "@/lib/i18n";
 import { useScrollY, useScrollProgress } from "@/hooks/use-reveal";
-import { Brain, Languages } from "lucide-react";
+import { Brain, Languages, ChevronDown, BookOpen } from "lucide-react";
+import { GUIDES, type GuideSlug } from "@/lib/guides-content";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const NAV_GROUPS = [
+  { en: "Resume & Documents", zh: "简历与文书", short: { en: "Resume", zh: "简历" }, slugs: ["cv-writing", "ats", "cover-letters"] as GuideSlug[] },
+  { en: "Outreach & Prep", zh: "沟通与求职", short: { en: "Prep", zh: "求职" }, slugs: ["email-templates", "job-decoding", "interview-prep"] as GuideSlug[] },
+];
 
 /**
  * Shared public (logged-out) top navigation used by the landing page and the
@@ -11,6 +20,7 @@ import { Brain, Languages } from "lucide-react";
 export function PublicNav({ showProgress = false }: { showProgress?: boolean }) {
   const { t, i18n } = useTranslation();
   const current = (i18n.language?.split("-")[0] as Lang) || "en";
+  const lang = current === "zh" ? "zh" : "en";
   const scrollY = useScrollY();
   const progress = useScrollProgress();
   const scrolled = scrollY > 12;
@@ -40,6 +50,36 @@ export function PublicNav({ showProgress = false }: { showProgress?: boolean }) 
         </Link>
 
         <div className="flex shrink-0 items-center gap-1">
+          {NAV_GROUPS.map((grp, gi) => (
+            <DropdownMenu key={grp.en}>
+              <DropdownMenuTrigger className="inline-flex items-center gap-1 text-xs sm:text-sm px-1.5 sm:px-2 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors outline-none whitespace-nowrap">
+                <span className="sm:hidden">{grp.short[lang]}</span>
+                <span className="hidden sm:inline">{grp[lang]}</span>
+                <ChevronDown className="w-3.5 h-3.5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[min(20rem,calc(100vw-1.5rem))] p-1.5">
+                {GUIDES.filter(g => grp.slugs.includes(g.slug)).sort((a, b) => grp.slugs.indexOf(a.slug) - grp.slugs.indexOf(b.slug)).map(g => (
+                  <DropdownMenuItem key={g.slug} asChild className="cursor-pointer items-start gap-3 p-2.5">
+                    <Link to={`/guides/${g.slug}` as "/guides/ats"}>
+                      <g.icon className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium">{g.title[lang]}</span>
+                        <span className="block text-xs text-muted-foreground">{g.summary[lang]}</span>
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+                {gi === NAV_GROUPS.length - 1 && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild className="cursor-pointer gap-2 p-2.5 text-sm font-medium text-primary">
+                      <Link to="/guides"><BookOpen className="w-4 h-4" />{lang === "zh" ? "全部资源" : "All guides & resources"}</Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ))}
           <Languages className="hidden sm:block w-4 h-4 text-muted-foreground mr-1" />
           <div className="flex items-center gap-1 rounded-full border border-border p-0.5">
             {LANGS.map(l => (

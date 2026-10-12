@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 const JOB_FIELDS =
   "id,title,department,employment_type,location,work_mode,seniority,openings,summary,responsibilities,required_skills,preferred_skills,education,experience,salary_min,salary_max,salary_currency,benefits,interview_stages,status,session_id,class_id,classes(name,course_code)";
 
+/** Public: read one posted job (no authentication of any kind required). */
 export const Route = createFileRoute("/api/public/job")({
   server: {
     handlers: {

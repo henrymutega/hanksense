@@ -5,8 +5,10 @@ import { PublicNav } from "@/components/PublicNav";
 import { Reveal, useScrollY, useCountUp } from "@/hooks/use-reveal";
 import {
   Sparkles, Upload, TrendingUp, CalendarClock, GraduationCap, BarChart3,
-  ArrowRight, Check, ChevronDown,
+  ArrowRight, Check, ChevronDown, Target,
 } from "lucide-react";
+import { CvCoachShowcase } from "@/components/CvCoachShowcase";
+import { SiteChatbot } from "@/components/SiteChatbot";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
@@ -119,6 +121,9 @@ export function Landing() {
               {t("landing.getStarted")}
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
+            <a href="#cv-coach" className="inline-flex items-center justify-center gap-2 rounded-md border border-primary/40 bg-primary/10 px-5 py-3 sm:py-2.5 text-sm font-medium text-primary transition-all duration-300 hover:bg-primary/15 hover:-translate-y-0.5">
+              <Target className="w-4 h-4" /> {t("landing.cvCoachCta", { defaultValue: "Job seeker? Try CV Coach" })}
+            </a>
             <Link to="/login" className="inline-flex items-center justify-center gap-2 rounded-md border border-border px-5 py-3 sm:py-2.5 text-sm font-medium transition-all duration-300 hover:bg-accent hover:-translate-y-0.5">
               {t("landing.signIn")}
             </Link>
@@ -141,11 +146,28 @@ export function Landing() {
         </div>
       </div>
 
+      <CvCoachShowcase />
+
+      {/* INSTITUTIONAL TRANSITION BANNER */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 pb-0 sm:pb-0">
+        <Reveal>
+          <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-chart-2/10 p-5 sm:p-7">
+            <div className="lp-blob pointer-events-none absolute -top-16 right-10 h-44 w-44 rounded-full bg-chart-2/20 blur-[70px]" aria-hidden />
+            <span className="relative inline-flex items-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest text-primary bg-primary/10 border border-primary/30 rounded-full px-3 py-1">
+              <GraduationCap className="w-3.5 h-3.5 shrink-0" /> {t("landing.instEyebrow")}
+            </span>
+            <h2 className="relative text-lg sm:text-xl font-semibold mt-3">{t("landing.instTitle")}</h2>
+            <p className="relative text-sm text-muted-foreground mt-1.5 max-w-3xl leading-relaxed">{t("landing.instBody")}</p>
+          </div>
+        </Reveal>
+      </section>
+
       {/* DASHBOARD PREVIEW */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <Reveal>
           <div className="lp-card bg-card border border-border rounded-2xl p-4 sm:p-7">
-            <h2 className="text-lg sm:text-xl font-semibold">{t("landing.dashboardTitle")}</h2>
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest text-primary">{t("landing.dashboardEyebrow")}</span>
+            <h2 className="text-lg sm:text-xl font-semibold mt-1">{t("landing.dashboardTitle")}</h2>
             <p className="text-sm text-muted-foreground mt-1 max-w-3xl">{t("landing.dashboardBody")}</p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
               <Metric label={t("landing.metricJobs")} value={12} />
@@ -177,7 +199,9 @@ export function Landing() {
       <section ref={flowRef} className="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-14">
         <Reveal>
           <div className="lp-card bg-card border border-border rounded-2xl p-5 sm:p-7">
-            <h2 className="text-lg sm:text-xl font-semibold">{t("landing.flowTitle")}</h2>
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest text-primary">{t("landing.flowEyebrow")}</span>
+            <h2 className="text-lg sm:text-xl font-semibold mt-1">{t("landing.flowTitle")}</h2>
+            <p className="text-sm text-muted-foreground mt-1 max-w-3xl">{t("landing.flowBody")}</p>
             <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {FLOW.map((s, i) => {
                 const on = i <= active;
@@ -206,7 +230,8 @@ export function Landing() {
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-14 grid lg:grid-cols-2 gap-4 sm:gap-6">
         <Reveal delay={60}>
           <div className="lp-card h-full bg-card border border-border rounded-2xl p-5 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-semibold">{t("landing.whatIsTitle")}</h2>
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest text-primary">{t("landing.whatIsEyebrow")}</span>
+            <h2 className="text-lg sm:text-xl font-semibold mt-1">{t("landing.whatIsTitle")}</h2>
             <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{t("landing.whatIsBody")}</p>
             <div className="mt-5 flex flex-wrap gap-2">
               {FLOW.map((s, i) => (
@@ -222,7 +247,8 @@ export function Landing() {
         </Reveal>
         <Reveal delay={160}>
           <div className="lp-card h-full bg-card border border-border rounded-2xl p-5 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-semibold">{t("landing.achieveTitle")}</h2>
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest text-primary">{t("landing.achieveEyebrow")}</span>
+            <h2 className="text-lg sm:text-xl font-semibold mt-1">{t("landing.achieveTitle")}</h2>
             <ul className="mt-3 space-y-3">
               {(["a1", "a2", "a3", "a4"] as const).map((k, i) => (
                 <Reveal key={k} delay={200 + i * 90} y={12}>
@@ -238,6 +264,11 @@ export function Landing() {
       </section>
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-14">
+        <Reveal className="text-center mb-6 sm:mb-8">
+          <span className="text-[10px] sm:text-xs uppercase tracking-widest text-primary">{t("landing.featuresEyebrow")}</span>
+          <h2 className="text-xl sm:text-2xl font-semibold mt-1">{t("landing.featuresTitle")}</h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl mx-auto">{t("landing.featuresBody")}</p>
+        </Reveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f, i) => (
             <Reveal key={f.k} delay={(i % 3) * 110}>
@@ -271,9 +302,13 @@ export function Landing() {
         </Reveal>
       </section>
 
-      <footer className="border-t border-border py-6 px-4 text-center text-xs text-muted-foreground">
-        {t("landing.footer")}
+      <footer className="border-t border-border py-6 px-4 text-center text-xs text-muted-foreground space-y-2">
+        <Link to="/guides" className="inline-block text-primary hover:underline">
+          {t("landing.guidesLink", { defaultValue: "Career & Hiring Academy — free guides" })}
+        </Link>
+        <div>{t("landing.footer")}</div>
       </footer>
+      <SiteChatbot />
     </div>
   );
 }

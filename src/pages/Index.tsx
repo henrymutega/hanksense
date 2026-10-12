@@ -9,11 +9,13 @@ import { Landing } from "@/components/Landing";
 import { supabase } from "@/integrations/supabase/client";
 import { STUDENT_JOB_LIMIT } from "@/lib/lecturer";
 import { LogoLoader } from "@/components/LogoLoader";
+import CvCoach from "@/pages/CvCoach";
 
 function Home() {
-  const { user, loading } = useAuth();
+  const { user, loading, role } = useAuth();
   if (loading) return <LogoLoader />;
   if (!user) return <Landing />;
+  if (role === "individual") return <CvCoach />;
   return <Dashboard />;
 }
 

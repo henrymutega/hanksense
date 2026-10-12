@@ -8,9 +8,9 @@ import { PendingGate, StudentAttachmentGate } from "./Gates";
 import { ViewerBanner, SubscriptionBanner } from "./Banners";
 import { LogoLoader, FadeTransition } from "@/components/LogoLoader";
 
-const PUBLIC_PATHS = ["/login", "/signup", "/reset-password"];
+const PUBLIC_PATHS = ["/login", "/signup", "/reset-password", "/guides"];
 export function isPublic(p: string) {
-  return PUBLIC_PATHS.includes(p) || p.startsWith("/join/") || p.startsWith("/apply/");
+  return PUBLIC_PATHS.includes(p) || p.startsWith("/guides/") || p.startsWith("/join/") || p.startsWith("/apply/");
 }
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
@@ -20,11 +20,17 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   const qc = useQueryClient();
   const router = useRouter();
 
-  // post-OAuth: apply pending role/invite stored before redirect
+  // Role chosen on the sign-up form (session storage or account metadata).
+  const metaRole = (user?.user_metadata as any)?.signup_role as string | undefined;
+  const signupRole =
+    (typeof window !== "undefined" ? sessionStorage.getItem("pending_role") : null) ||
+    (metaRole && ["lecturer", "student", "individual"].includes(metaRole) ? metaRole : null);
+
+  // post-signup/OAuth: apply pending role/invite stored before redirect
   useEffect(() => {
-    if (!user) return;
+    if (!user || loading) return;
     (async () => {
-      const pendingRole = sessionStorage.getItem("pending_role");
+      const pendingRole = role ? null : signupRole;
       const pendingInvite = sessionStorage.getItem("pending_invite");
       if (pendingRole) {
         await supabase.rpc("assign_self_role", { _role: pendingRole as any });
@@ -37,9 +43,12 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       }
       if (pendingRole || pendingInvite) await refreshRole();
     })();
-  }, [user?.id]);
+  }, [user?.id, loading, role]);
 
-  // invalidate caches on auth change
+  // Supabase holds an internal auth lock while notifying listeners. Router
+  // invalidation can read the session again, so defer it until that lock is
+  // released; doing it inline can leave signInWithPassword pending even after
+  // the token request returned 200.
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
@@ -59,6 +68,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     let target: string | null = null;
     if (!user && !isPublic(path) && path !== "/") target = "/login";
     else if (user && (path === "/login" || path === "/signup")) target = "/";
+    else if (user && !role && signupRole) target = null; // role is being applied automatically
     else if (user && !role && path !== "/select-role" && !isPublic(path)) target = "/select-role";
     else if (user && role && path === "/select-role") target = "/";
 
@@ -68,6 +78,8 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     nav({ to: target });
   }, [user?.id, role, loading, path]);
 
+  // Keep the loader overlay until the user is fully resolved, then let the
+  // loaded page fade in underneath while the loader fades out.
   const [booted, setBooted] = React.useState(false);
   React.useEffect(() => {
     if (!loading) setBooted(true);

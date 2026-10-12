@@ -2,6 +2,10 @@ import { Brain } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import React from "react";
 
+/**
+ * Branded full-screen loading state used while the app boots, auth resolves,
+ * or a page chunk loads. Pure CSS animation — no added loading time.
+ */
 export function LogoLoader({
   label,
   className,
@@ -35,6 +39,12 @@ export function LogoLoader({
   );
 }
 
+/**
+ * Smoothly cross-fades between the branded loader and the loaded page.
+ * The loader overlays the children while loading, then fades out to reveal
+ * children that fade in underneath. Prevents the harsh flash when auth or
+ * data finishes resolving.
+ */
 export function FadeTransition({
   loading,
   children,
@@ -56,7 +66,8 @@ export function FadeTransition({
       setExiting(false);
       return;
     }
-
+    // Content is ready; begin fade-out after a short minimum display so the
+    // loader doesn't flash on ultra-fast resolves.
     const start = setTimeout(() => setExiting(true), Math.max(0, minDisplayMs - 200));
     const finish = setTimeout(() => {
       setShowOverlay(false);

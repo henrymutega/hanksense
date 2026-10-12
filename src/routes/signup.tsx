@@ -14,7 +14,7 @@ export const Route = createFileRoute("/signup")({
   }),
   validateSearch: (s: Record<string, unknown>) => ({
     code: typeof s.code === "string" ? s.code : "",
-    role: (s.role === "lecturer" || s.role === "student" ? s.role : "") as "" | "lecturer" | "student",
+    role: (s.role === "lecturer" || s.role === "student" || s.role === "individual" ? s.role : "") as "" | "lecturer" | "student" | "individual",
   }),
   component: Signup,
 });

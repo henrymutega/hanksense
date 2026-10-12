@@ -44,7 +44,7 @@ export const AI_MISSING_KEY_CODE = "AI_NOT_CONFIGURED";
  *   AI_PROXY_URL=https://<your-published-domain>/api/public/ai-generate
  */
 export const DEFAULT_AI_PROXY_URL =
-  "https://id-preview--dfc88797-2921-4da8-b513-2940dbd3352e.lovable.app/api/public/ai-generate";
+  "https://hanksence.app/api/public/ai-generate";
 
 /** Thrown when no AI provider key is present in this environment. */
 export class AiConfigurationError extends Error {

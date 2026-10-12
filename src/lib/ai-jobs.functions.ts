@@ -114,7 +114,7 @@ async function aiJson(prompt: string): Promise<string> {
   return generateAiText(prompt, process.env.LOVABLE_API_KEY, process.env.OPENAI_API_KEY);
 }
 
-async function generateValidated<T>(
+export async function generateValidated<T>(
   schema: z.ZodType<T>,
   prompt: string,
   label: string,

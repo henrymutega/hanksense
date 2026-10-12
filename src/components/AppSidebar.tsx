@@ -77,6 +77,15 @@ export function AppSidebar() {
     ]});
   }
 
+  if (role === "individual") {
+    NAV.length = 0;
+    NAV.push({ group: t("nav.aiCopilot"), items: [{ to: "/cv-coach", label: t("nav.cvCoach", { defaultValue: "CV Coach" }), icon: FileText }] });
+  }
+
+  if (isStudent || role === "individual") {
+    NAV.push({ group: t("nav.account"), items: [{ to: "/billing", label: t("nav.billing"), icon: CreditCard }] });
+  }
+
   if (isAdmin) {
     NAV.push({ group: t("nav.adminGroup"), items: [{ to: "/admin", label: t("nav.allLecturers"), icon: ShieldCheck }] });
   }

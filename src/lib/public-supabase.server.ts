@@ -1,5 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 
+/**
+ * Publishable-key Supabase client for fully public endpoints (job view + apply).
+ *
+ * Resolution order:
+ *  1. Runtime environment variables (Lovable, Node/Vercel with vars configured).
+ *  2. Build-time VITE_* values inlined by Vite — these always exist because the
+ *     browser client needs them, so public endpoints keep working on hosts
+ *     (e.g. Vercel) where only the VITE_* variables were configured at build.
+ */
 const BUILD_URL = import.meta.env?.VITE_SUPABASE_URL as string | undefined;
 const BUILD_KEY = import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
 

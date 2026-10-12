@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 import { Check, Sparkles, AlertTriangle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { IndividualBilling, StudentBilling } from "@/components/RoleBilling";
 
 
 
@@ -28,6 +29,9 @@ function BillingPage() {
   }
   useEffect(() => { load(); }, [user, role]);
 
+  const zh = i18n.language?.startsWith("zh");
+  if (role === "individual") return <div><PageHeader title={t("billing.title")} subtitle={zh ? "通过支付宝或 M-Pesa 付款购买更多职位分析。" : "Pay by Alipay or M-Pesa to unlock more job analyses."} /><IndividualBilling /></div>;
+  if (role === "student") return <div><PageHeader title={t("billing.title")} subtitle={zh ? "查看职位发布额度，并通过支付宝或 M-Pesa 购买更多。" : "See your job-post allowance and buy more by Alipay or M-Pesa."} /><StudentBilling /></div>;
   if (role !== "lecturer" && role !== "admin") return <div><PageHeader title={t("billing.title")} subtitle={t("billing.lecturersOnly")} /></div>;
 
   // The access period runs from the activation date (7 days trial / 90 days active).

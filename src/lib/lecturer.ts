@@ -26,7 +26,7 @@ export function useLecturerState(): LecturerState {
       return;
     }
     if (role !== "lecturer" && role !== "admin") {
-      setS({ loading: false, accountStatus: null, billingStatus: null, semesterEndsAt: null, canWrite: role === "admin", isStudent: false });
+      setS({ loading: false, accountStatus: null, billingStatus: null, semesterEndsAt: null, canWrite: false, isStudent: false });
       return;
     }
     (async () => {

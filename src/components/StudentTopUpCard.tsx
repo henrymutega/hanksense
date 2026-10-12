@@ -4,20 +4,27 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { TOPUP_PRICE_CNY, TOPUP_SLOTS, type StudentJobUsage } from "@/lib/lecturer";
 import { Sparkles, Coins, Clock, Loader2 } from "lucide-react";
+import { PaymentPanel, tagNote, type PayMethod } from "@/components/PaymentMethods";
 
+/**
+ * Shown to students: remaining job posts and the paid top-up request flow.
+ * Payment happens offline; an admin approves once the money is received.
+ */
 export function StudentTopUpCard({ usage, lecturerId }: { usage: StudentJobUsage; lecturerId?: string | null }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [method, setMethod] = useState<PayMethod>("alipay");
 
   const reached = usage.remaining <= 0;
   const pending = usage.requestStatus === "pending";
 
   async function submit() {
     if (!lecturerId) return;
+    if (!note.trim()) return toast.error(t("topup.notePlaceholder"));
     setSaving(true);
-    const { error } = await supabase.rpc("request_job_topup", { _lecturer: lecturerId, _note: note });
+    const { error } = await supabase.rpc("request_job_topup", { _lecturer: lecturerId, _note: tagNote(method, note) });
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success(t("topup.submitted"));
@@ -59,8 +66,10 @@ export function StudentTopUpCard({ usage, lecturerId }: { usage: StudentJobUsage
 
       {open && (
         <div className="mt-3 space-y-2">
+          <PaymentPanel amount={TOPUP_PRICE_CNY} method={method} onMethod={setMethod} />
           <label className="block text-xs text-muted-foreground">{t("topup.noteLabel")}</label>
-          <input
+          <textarea
+            rows={2}
             value={note}
             onChange={e => setNote(e.target.value)}
             placeholder={t("topup.notePlaceholder")}

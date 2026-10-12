@@ -5,10 +5,12 @@ const Body = z.object({
   jobId: z.string().min(1),
   name: z.string().min(2).max(120),
   email: z.string().email(),
+  // Long CVs are accepted and trimmed below instead of being rejected.
   cvText: z.string().min(50),
   fileName: z.string().max(200).optional().default(""),
 });
 
+/** Public: submit a job application. No sign-in required. Always replies with JSON. */
 export const Route = createFileRoute("/api/public/apply")({
   server: {
     handlers: {

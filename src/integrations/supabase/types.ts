@@ -114,6 +114,108 @@ export type Database = {
         }
         Relationships: []
       }
+      individual_credits: {
+        Row: {
+          extra_slots: number
+          updated_at: string
+          used_slots: number
+          user_id: string
+        }
+        Insert: {
+          extra_slots?: number
+          updated_at?: string
+          used_slots?: number
+          user_id: string
+        }
+        Update: {
+          extra_slots?: number
+          updated_at?: string
+          used_slots?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      individual_cv_reviews: {
+        Row: {
+          company: string | null
+          created_at: string
+          cv_filename: string | null
+          id: string
+          job_analysis: Json | null
+          job_description: string
+          job_title: string | null
+          match_result: Json | null
+          original_cv_text: string | null
+          tailored_cv_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          cv_filename?: string | null
+          id?: string
+          job_analysis?: Json | null
+          job_description: string
+          job_title?: string | null
+          match_result?: Json | null
+          original_cv_text?: string | null
+          tailored_cv_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          cv_filename?: string | null
+          id?: string
+          job_analysis?: Json | null
+          job_description?: string
+          job_title?: string | null
+          match_result?: Json | null
+          original_cv_text?: string | null
+          tailored_cv_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      individual_topup_requests: {
+        Row: {
+          amount_cny: number
+          created_at: string
+          id: string
+          note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          slots: number
+          status: Database["public"]["Enums"]["topup_status"]
+          user_id: string
+        }
+        Insert: {
+          amount_cny?: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          slots?: number
+          status?: Database["public"]["Enums"]["topup_status"]
+          user_id: string
+        }
+        Update: {
+          amount_cny?: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          slots?: number
+          status?: Database["public"]["Enums"]["topup_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       lecturer_billing: {
         Row: {
           activated_at: string | null
@@ -216,6 +318,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_settings: {
+        Row: {
+          alipay_qr: string | null
+          id: number
+          instructions: string | null
+          mpesa_name: string | null
+          mpesa_phone: string | null
+          mpesa_qr: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          alipay_qr?: string | null
+          id?: number
+          instructions?: string | null
+          mpesa_name?: string | null
+          mpesa_phone?: string | null
+          mpesa_qr?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          alipay_qr?: string | null
+          id?: number
+          instructions?: string | null
+          mpesa_name?: string | null
+          mpesa_phone?: string | null
+          mpesa_qr?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -513,6 +648,66 @@ export type Database = {
           },
         ]
       }
+      student_job_credits: {
+        Row: {
+          extra_slots: number
+          lecturer_id: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          extra_slots?: number
+          lecturer_id: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          extra_slots?: number
+          lecturer_id?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      student_topup_requests: {
+        Row: {
+          amount_cny: number
+          created_at: string
+          id: string
+          lecturer_id: string
+          note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          slots: number
+          status: Database["public"]["Enums"]["topup_status"]
+          student_id: string
+        }
+        Insert: {
+          amount_cny?: number
+          created_at?: string
+          id?: string
+          lecturer_id: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          slots?: number
+          status?: Database["public"]["Enums"]["topup_status"]
+          student_id: string
+        }
+        Update: {
+          amount_cny?: number
+          created_at?: string
+          id?: string
+          lecturer_id?: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          slots?: number
+          status?: Database["public"]["Enums"]["topup_status"]
+          student_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -539,13 +734,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_individual_workspace: { Args: never; Returns: undefined }
       admin_activate_lecturer: {
         Args: { _lecturer: string }
+        Returns: undefined
+      }
+      admin_review_individual_topup: {
+        Args: { _approve: boolean; _request: string }
+        Returns: undefined
+      }
+      admin_review_topup: {
+        Args: { _approve: boolean; _request: string }
         Returns: undefined
       }
       admin_set_lecturer_billing: {
         Args: { _lecturer: string; _mode: string }
         Returns: undefined
+      }
+      apply_to_job: {
+        Args: {
+          _cv_text: string
+          _email: string
+          _job_id: string
+          _name: string
+        }
+        Returns: Json
       }
       assign_self_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
@@ -555,6 +768,7 @@ export type Database = {
         Args: { _cand: string; _user: string }
         Returns: boolean
       }
+      email_signup_status: { Args: { _email: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -582,6 +796,11 @@ export type Database = {
       }
       redeem_class_invite: { Args: { _code: string }; Returns: string }
       redeem_session_code: { Args: { _code: string }; Returns: string }
+      request_individual_topup: { Args: { _note?: string }; Returns: string }
+      request_job_topup: {
+        Args: { _lecturer: string; _note?: string }
+        Returns: string
+      }
       set_lecturer_status: {
         Args: {
           _lecturer: string
@@ -602,7 +821,7 @@ export type Database = {
     }
     Enums: {
       account_status: "pending" | "approved" | "suspended"
-      app_role: "admin" | "lecturer" | "student"
+      app_role: "admin" | "lecturer" | "student" | "individual"
       candidate_stage:
         | "applied"
         | "ai_screened"
@@ -616,6 +835,7 @@ export type Database = {
       job_status: "draft" | "posted" | "closed"
       session_status: "scheduled" | "live" | "ended" | "cancelled"
       subscription_status: "active" | "inactive" | "trial" | "expired"
+      topup_status: "pending" | "approved" | "declined"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -744,7 +964,7 @@ export const Constants = {
   public: {
     Enums: {
       account_status: ["pending", "approved", "suspended"],
-      app_role: ["admin", "lecturer", "student"],
+      app_role: ["admin", "lecturer", "student", "individual"],
       candidate_stage: [
         "applied",
         "ai_screened",
@@ -759,6 +979,7 @@ export const Constants = {
       job_status: ["draft", "posted", "closed"],
       session_status: ["scheduled", "live", "ended", "cancelled"],
       subscription_status: ["active", "inactive", "trial", "expired"],
+      topup_status: ["pending", "approved", "declined"],
     },
   },
 } as const

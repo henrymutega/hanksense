@@ -32,8 +32,8 @@ const JOB_FIELDS =
 export const getPublicJob = createServerFn({ method: "GET" })
   .validator((d: unknown) => z.object({ jobId: z.string() }).parse(d))
   .handler(async ({ data }): Promise<PublicJob | null> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row } = await supabaseAdmin
+    const { publicSupabase } = await import("@/lib/public-supabase.server");
+    const { data: row } = await publicSupabase()
       .from("session_jobs" as any)
       .select(JOB_FIELDS)
       .eq("id", data.jobId)
@@ -60,35 +60,15 @@ export const submitApplication = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: job } = await supabaseAdmin
-      .from("session_jobs" as any)
-      .select("id,session_id,class_id,status")
-      .eq("id", data.jobId)
-      .maybeSingle();
-    if (!job) throw new Error("This job posting no longer exists.");
-    if ((job as any).status !== "posted") throw new Error("This job posting is closed for applications.");
-
-    const { data: existing } = await supabaseAdmin
-      .from("session_candidates" as any)
-      .select("id")
-      .eq("job_id", data.jobId)
-      .eq("email", data.email.toLowerCase())
-      .maybeSingle();
-    if (existing) throw new Error("You have already applied to this job with that email address.");
-
-    const { error } = await supabaseAdmin.from("session_candidates" as any).insert({
-      job_id: (job as any).id,
-      session_id: (job as any).session_id,
-      class_id: (job as any).class_id,
-      name: data.name.trim(),
-      email: data.email.toLowerCase(),
-      cv_text: data.cvText.slice(0, 20000),
-      cv_summary: null,
-      skills: [],
-      score: 0,
-      stage: "applied",
+    const { publicSupabase } = await import("@/lib/public-supabase.server");
+    const { data: result, error } = await publicSupabase().rpc("apply_to_job" as any, {
+      _job_id: data.jobId,
+      _name: data.name.trim(),
+      _email: data.email.toLowerCase(),
+      _cv_text: data.cvText,
     });
     if (error) throw new Error(error.message);
+    const r = result as any;
+    if (!r?.ok) throw new Error(r?.error || "Submission failed.");
     return { ok: true };
   });

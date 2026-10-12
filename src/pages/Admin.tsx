@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { accessEnd, accessActive, daysLeft as daysLeftOf } from "@/lib/billing";
 import { AdminTopUpRequests } from "@/components/AdminTopUpRequests";
+import { AdminIndividualTopUps } from "@/components/AdminIndividualTopUps";
+import { AdminPaymentSettings } from "@/components/PaymentMethods";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -318,7 +320,9 @@ function AdminPage() {
         </table>
       </div>
 
+      <AdminPaymentSettings />
       <AdminTopUpRequests />
+      <AdminIndividualTopUps />
     </div>
   );
 }
